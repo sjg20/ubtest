@@ -1,0 +1,176 @@
+# Chrome OS
+sudo apt-get install git-core gitk git-gui curl lvm2 thin-provisioning-tools \
+     python-pkg-resources python-virtualenv python-oauth2client xz-utils \
+     build-essential pkg-config picocom flex bison device-tree-compiler \
+     libisl15 python3-pytest
+sudo mkdir /cosarm
+sudo chown sglass:sglass /cosarm
+cd /cosarm
+git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+
+echo "export HISTSIZE=10000" >>~/.bashrc
+echo "shopt -s histappend" >>~/.bashrc
+echo "PROMPT_COMMAND='history -a'" >>~/.bashrc
+
+echo ". /usr/share/bash-completion/bash_completion" >>~/.bashrc
+echo ". /vid/software/devel/tbot/completions.sh" >>~/.bashrc
+echo "export PATH=\$PATH:/cosarm/depot_tools" >>~/.bashrc
+echo "export PATH=$PATH:~/.local/bin" >>~/.bashrc
+
+git config --global user.email sjg@chromium.org
+git config --global user.name "Simon Glass"
+
+repo init -u https://chrome-internal.googlesource.com/chromeos/manifest-internal.git --repo-url https://chromium.googlesource.com/external/repo.git -b stable
+repo sync -j4 -n
+repo sync -l
+
+# other
+sudo apt-get install emacs nfs-common python3-setuptools cmake libftdi1-dev libpopt-dev
+
+sudo bash
+echo "live:/share/MD0_DATA/vid 	     /vid  nfs auto   0 0" >>/etc/fstab
+mkdir /vid
+mount /vid
+Add 'live' to /etc/hosts
+
+# Add public group:
+echo "public:x:1505:sglass" >>/etc/group
+
+# tbot
+cd /vid/software/devel/tbot
+python3 setup.py install --user
+tbot selftest
+
+# setup sshd on remote machine, do this on main machine:
+cat ~/.ssh/id_rsa.pub
+
+Then back to remote machine
+  mkdir ~/.ssh
+  cat >~/.ssh/authorized_keys
+# add this to /etc/ssh/sshd_config
+  PubkeyAuthentication yes
+sudo systemctl restart ssh
+
+# set permissions
+chmod 600 ~/.ssh/authorized_keys
+
+Check you can ssh to remote machine without entering a password
+
+# yepkit
+https://github.com/Yepkit/ykush.git
+sudo apt-get install libusb-1.0-0-dev
+cd /vid/software/devel/ykush/
+./build.sh
+sudo ./install.sh
+# Bus 001 Device 043: ID 04d8:f2f7 Microchip Technology, Inc. Yepkit YKUSH
+
+udevadm info --name=/dev/bus/usb/001/043 --attribute-walk
+
+#udev
+# Add to /etc/udev/rules.d/...:
+
+90-yepkit.rules:
+ACTION=="add" \
+, SUBSYSTEM=="usb" \
+, ATTR{idProduct}=="f2f7" \
+, ATTR{idVendor}=="04d8" \
+, ATTR{serial}=="YK17698" \
+, MODE="0666" \
+, SYMLINK+="ykush0"
+
+91-serial-rpi.rules:
+ACTION=="add" \
+, KERNEL=="ttyUSB*" \
+, SUBSYSTEM=="tty" \
+, KERNELS=="1-1.2.1" \
+, MODE="0666" \
+, SYMLINK+="ttyusb_port1"
+
+92-sdwire.rules:
+ACTION=="add" \
+, SUBSYSTEM=="usb" \
+, ATTR{idProduct}=="6001" \
+, ATTR{idVendor}=="04e8" \
+, ATTR{serial}=="sdwire-18" \
+, MODE="0666" \
+, SYMLINK+="sdwire0"
+
+93-mount.rules:
+ACTION=="add" \
+, SUBSYSTEM=="block" \
+, KERNEL=="sd*" \
+, RUN+="/home/sglass/bin/add-usb.sh"
+
+ACTION=="remove" \
+, SUBSYSTEM=="block" \
+, KERNEL=="sd*" \
+, RUN+="/home/sglass/bin/remove-usb.sh"
+
+
+SDmux
+
+git clone git://git.tizen.org/tools/testlab/sd-mux
+cd sd-mux
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+
+
+sudo systemctl edit systemd-udevd
+MountFlags=shared
+
+cat /etc/systemd/system/systemd-udevd.service
+
+
+gitlab
+https://docs.gitlab.com/runner/install/linux-repository.html
+curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | sudo bash
+sudo apt-get install gitlab-runner
+
+$ sudo gitlab-runner register
+
+Runtime platform                                    arch=amd64 os=linux pid=29401 revision=577f813d version=12.5.0
+Running in system-mode.
+
+Please enter the gitlab-ci coordinator URL (e.g. https://gitlab.com/):
+https://gitlab.denx.de
+Please enter the gitlab-ci token for this runner:
+e4V7yG9_XUDexBsDFz4v
+Please enter the gitlab-ci description for this runner:
+[kea]:
+Please enter the gitlab-ci tags for this runner (comma separated):
+rpi3b
+Registering runner... succeeded                     runner=e4V7yG9_
+Please enter the executor: shell, ssh, docker+machine, kubernetes, custom, docker, parallels, docker-ssh, virtualbox, docker-ssh+machine:
+shell
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
+
+￼
+libmpfr.so.4
+
+
+udevadm info --name=/dev/bus/usb/001/043 --attribute-walk
+udevadm test //devices...
+
+sudo udevadm control -R && sudo udevadm trigger && udevadm test /sys/bus/usb/devices/1-1.2.1
+
+udevadm info --name=/dev/ttyUSB0 --attribute-walk
+
+
+tbot -l tui.py -b rpi3.py -t uname.py test_uname -vv
+tbot -l tui.py -b rpi3.py interactive_board
+
+
+
+systemctl daemon-reload
+systemctl stop gitlab-runner
+
+
+sudo su - gitlab-runner
+gitlab-runner@kea:~$
+cd /home/gitlabber/u-boot
+export PATH=$PATH:/vid/software/devel/ubtest/u-boot-test-hooks/bin
+test/py/test.py -B rpi_3 --id sjg-rpi_3b --build-dir ../current/rpi_3 -k help
+
