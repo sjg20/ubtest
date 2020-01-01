@@ -1,0 +1,12 @@
+# This file describes servo boards connected to this host.
+#
+# Line text starting with # to end of line is ignored, as well as empy lines.
+#
+# Configuration lines consist of up to 4 comma separated fields, the last
+# two are optional:
+#
+# name serial-number port-number board
+#
+samus, 686203-00047, 9900, samus
+nyan-big, 911416-00900, 9901, nyan
+
