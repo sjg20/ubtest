@@ -1,18 +1,21 @@
 import time
 
 class Ykush(object):
-    def ykush_on(self, host, serial, port):
-        host.exec0("ykushcmd", "-s", serial, "-u", port)
+    def ykush_on(self):
+        self.host.exec0('ykushcmd', '-s', self.ykush_serial,
+                        '-u', self.ykush_port)
 
-    def ykush_off(self, host, serial, port):
-        host.exec0("ykushcmd", "-s", serial, "-d", port)
+    def ykush_off(self):
+        self.host.exec0('ykushcmd', '-s', self.ykush_serial,
+                        '-d', self.ykush_port)
 
-    def ykush_is_on(self, host, serial, port):
-        out = host.exec0("ykushcmd", "-s", serial, "-g", port)
+    def ykush_is_on(self):
+        out = self.host.exec0('ykushcmd', '-s', self.ykush_serial,
+                              '-g', self.ykush_port)
         return 'ON' in out
 
-    def ykush_reset(self, host, serial, port):
-        if self.ykush_is_on(host, serial, port):
-            self.ykush_off(host, serial, port)
+    def ykush_reset(self):
+        if self.ykush_is_on():
+            self.ykush_off()
             time.sleep(1)
-        self.ykush_on(host, serial, port)
+        self.ykush_on()

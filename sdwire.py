@@ -1,6 +1,8 @@
 class Sdwire(object):
-    def sdwire_dut(self, host, serial):
-        host.exec0("sd-mux-ctrl", "--device-serial", serial, '--dut')
+    def sdwire_dut(self):
+        self.host.exec0("sd-mux-ctrl", "--device-serial",
+                        self.sdwire_serial, '--dut')
 
-    def sdwire_ts(self, host, serial):
-        host.exec0("sd-mux-ctrl", "--device-serial", serial, '--ts')
+    def sdwire_ts(self):
+        self.host.exec0("sd-mux-ctrl", "--device-serial",
+                        self.sdwire_serial, '--ts')

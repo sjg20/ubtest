@@ -22,13 +22,13 @@ class Rpi3(
         # You can access the labhost as `self.host` (if you use the
         # ConsoleConnector).  In this case I have a simple command to
         # toggle power.
-        self.sdwire_dut(self.host, self.sdwire_serial)
-        self.ykush_reset(self.host, self.ykush_serial, self.ykush_port)
+        self.sdwire_dut()
+        self.ykush_reset()
 
     def poweroff(self) -> None:
         """Procedure to turn power off."""
-        self.ykush_off(self.host, self.ykush_serial, self.ykush_port)
-        self.sdwire_ts(self.host, self.sdwire_serial)
+        self.ykush_off()
+        self.sdwire_ts()
 
     def connect(self, mach) -> channel.Channel:
         """Connect to the boards serial interface."""
