@@ -159,8 +159,12 @@ sudo udevadm control -R && sudo udevadm trigger && udevadm test /sys/bus/usb/dev
 udevadm info --name=/dev/ttyUSB0 --attribute-walk
 
 
-tbot -l tui.py -b rpi3.py -t uname.py test_uname -vv
-tbot -l tui.py -b rpi3.py interactive_board
+
+How to run
+==========
+
+tbot -l kea.py -b rpi3.py -t uname.py test_uname -vv
+tbot -l kea.py -b rpi3.py interactive_board
 
 
 
@@ -169,8 +173,6 @@ systemctl stop gitlab-runner
 
 
 sudo su - gitlab-runner
-gitlab-runner@kea:~$
-cd /home/gitlabber/u-boot
-export PATH=$PATH:/vid/software/devel/ubtest/u-boot-test-hooks/bin
-test/py/test.py -B rpi_3 --id sjg-rpi_3b --build-dir ../current/rpi_3 -k help
-
+cd u-boot
+buildman -k rpi_3_32b
+test/py/test.py -B rpi_3_32b --id sjg-rpi_3b --build-dir ../current/rpi_3_32b -k help
