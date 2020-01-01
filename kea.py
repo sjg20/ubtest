@@ -1,7 +1,7 @@
 import tbot
 from tbot.machine import connector, linux
 
-class TuiLab(
+class KeaLab(
     connector.ParamikoConnector,
     linux.Bash,
     linux.Lab,
@@ -15,4 +15,4 @@ class TuiLab(
 
 
 # tbot will check for `LAB`, don't forget to set it!
-LAB = TuiLab
+LAB = KeaLab
