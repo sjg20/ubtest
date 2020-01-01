@@ -1,6 +1,13 @@
 import time
 
 class Ykush(object):
+    """Intended to be included as a subclass of the board that needs it
+
+    Properties provided by base class:
+        host: Lab host
+        ykush_serial: Serial number of YKUSH device
+        ykush_port: Port number on that device
+    """
     def ykush_on(self):
         self.host.exec0('ykushcmd', '-s', self.ykush_serial,
                         '-u', self.ykush_port)
