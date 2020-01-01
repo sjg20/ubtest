@@ -23,7 +23,7 @@ class Rpi3(
         # ConsoleConnector).  In this case I have a simple command to
         # toggle power.
         self.sdwire_dut(self.host, self.sdwire_serial)
-        self.ykush_on(self.host, self.ykush_serial, self.ykush_port)
+        self.ykush_reset(self.host, self.ykush_serial, self.ykush_port)
 
     def poweroff(self) -> None:
         """Procedure to turn power off."""
