@@ -28,7 +28,7 @@ class Servo:
         self.servo_reset()
 
     def servo_off(self):
-        self.dut_control("pwr_button:press", "sleep:1", "pwr_button:release")
+        self.dut_control("pwr_button:press", "sleep:2", "pwr_button:release")
 
     def servo_reset(self):
         self.dut_control("cold_reset:on", "sleep:.2", "cold_reset:off")
