@@ -13,6 +13,8 @@ import sys
 import time
 from cros_constants import SERVOD, RCFILE, LOGDIR
 
+STATE_INIT, STATE_WAIT, STATE_ERROR, STATE_READY = range(4)
+
 class Servo(object):
     """Handle a servo board
 
@@ -27,6 +29,10 @@ class Servo(object):
         ready: True if the servo daemon is ready to serve traffic
         logs: Directory used by the daemon for log files
         info_file: Filename of the daemon's 'info' file
+        state: Current STATE_... of this servo
+        buf: Buffer containing date read from @info_file. We read out from this
+            a line at a time
+        errs: List of error messages written by servod into the @info_file
     """
     def __init__(self, name, port):
         self.name = name
@@ -36,6 +42,9 @@ class Servo(object):
         self.ready = False
         self.logs = os.path.join(LOGDIR, 'servod_%s' % self.port)
         self.info_file = os.path.join(self.logs, 'latest.INFO')
+        self.state = STATE_INIT
+        self.buf = b''
+        self.errs = []
 
     def remove_logs(self):
         """Remove any pre-existing logs for this daemon"""
@@ -55,16 +64,43 @@ class Servo(object):
         self.fd = os.open(self.info_file, os.O_RDONLY)
         if not self.fd:
             raise ValueError("Cannot open file '%s'" % self.info_file)
+        self.state = STATE_WAIT
 
     def process_data(self, data):
-        """Process data received from servod, waiting for it to be ready"""
-        for line in data.splitlines():
+        """Process data received from servod, waiting for it to be ready
+
+        Returns:
+            True if servo is ready, False if not
+        """
+        self.buf += data
+        while b'\n' in self.buf:
+            pos = self.buf.find(b'\n')
+            line = self.buf[:pos]
+            self.buf = self.buf[pos + 1:]
             #print('line', line)
             if b'Listening on localhost' in line:
-                self.ready = True
                 print('%s is ready' % self.name)
-        return self.ready
+                self.state = STATE_READY
+                return True
+            elif b'ERROR' in line:
+                pos = line.rfind(b' - ')
+                err = line[pos + 3:]
+                if err not in self.errs:
+                    print('%s got error: %s' % (self.name, err))
+                    self.errs.append(err)
+        return False
 
+    def active(self):
+        if self.state in (STATE_INIT, STATE_ERROR):
+            return False
+        elif self.state == STATE_WAIT:
+            if self.proc.poll() is None:
+                return True
+        elif self.state == STATE_READY:
+            return True
+
+    def kill(self):
+        self.proc.kill()
 
 class Servos(object):
     """Handle a group of servo boards
@@ -106,18 +142,26 @@ class Servos(object):
         """Monitor the servod log files until all boards are ready"""
         todo = {servo.fd: servo for servo in self.servos}
         fds = [servo.fd for servo in todo.values()]
+        err_count = 0
         while todo:
             readfds, _, _ = select.select(fds, [], [], 2.0)
             for readfd in readfds:
                 servo = todo.get(readfd)
                 if servo:
-                    data = os.read(readfd, 100)
+                    data = os.read(readfd, 1000)
                     if data:
                         if servo.process_data(data):
                             del todo[readfd]
                     else:
                         break
-        print('All ready')
+            for servo in todo.values():
+                if not servo.active():
+                    #print 'not active'
+                    del todo[servo.fd]
+                    err_count += 1
+                    data = os.read(servo.fd, 1000)
+                    servo.process_data(data)
+        print('%d ready, %d error' % (len(self.servos) - err_count, err_count))
 
     def get_port_by_name(self, name):
         """Get the servod port number for a board
@@ -133,6 +177,13 @@ class Servos(object):
                 return servo.port
         raise ValueError("No such servo '%s'" % name)
 
+    def kill(self):
+        for servo in self.servos:
+            try:
+                servo.kill()
+            except:
+                pass
+
 
 if __name__ == "__main__":
     if not os.path.exists(LOGDIR):
@@ -140,9 +191,12 @@ if __name__ == "__main__":
     servos = Servos()
     servos.read()
     servos.remove_logs()
-    servos.start()
-    servos.wait_ready()
+    try:
+        servos.start()
+        servos.wait_ready()
 
-    print('ready - press Ctrl-C to stop')
-    while True:
-        time.sleep(1)
+        print('ready - press Ctrl-C to stop')
+        while True:
+            time.sleep(1)
+    finally:
+        servos.kill()
