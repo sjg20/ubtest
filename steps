@@ -177,3 +177,7 @@ cd u-boot
 buildman -k rpi_3_32b
 test/py/test.py -B rpi_3_32b --id sjg-rpi_3b --build-dir ../current/rpi_3_32b -k help
 test/py/test.py -B Linksprite_pcDuino3 --id sjg-pcduino3 --build-dir ../current/Linksprite_pcDuino3 -k help
+
+PATH=$PATH:tools/buildman ARCH=`buildman -a chromebook_link` CROSS_COMPILE=`buildman -A chromebook_link` \
+test/py/test.py -B chromebook_link --id sjg-link --build-dir ../current/chromebook_link -k help
+
