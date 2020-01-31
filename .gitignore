@@ -1,1 +1,9 @@
+/.bm-work
+/boards.cfg
+/current
+/logs
+/standalone-hdctools
 /tbot
+/u-boot
+/u-boot-test-hooks
+/__pycache__
