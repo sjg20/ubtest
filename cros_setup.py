@@ -11,7 +11,7 @@ import shutil
 import subprocess
 import sys
 import time
-from cros_constants import SERVOD, RCFILE, LOGDIR
+from cros_constants import DUT_CONTROL, SERVOD, RCFILE, LOGDIR
 
 STATE_INIT, STATE_WAIT, STATE_ERROR, STATE_READY = range(4)
 
@@ -184,6 +184,19 @@ class Servos(object):
             except:
                 pass
 
+    def setup_pts(self):
+        for servo in self.servos:
+            if servo.state == STATE_READY:
+                cmd = [DUT_CONTROL, '-p', servo.port, 'cpu_uart_pty']
+                proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                        stderr=subprocess.PIPE)
+                stdout, stderr = proc.communicate(timeout=5)
+                pts = stdout.strip().split(b':')[-1]
+                cmd = ['sudo', 'chmod', 'a+rw', pts]
+                proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                                        stderr=subprocess.PIPE)
+                proc.communicate(timeout=1)
+
 
 if __name__ == "__main__":
     if not os.path.exists(LOGDIR):
@@ -194,6 +207,7 @@ if __name__ == "__main__":
     try:
         servos.start()
         servos.wait_ready()
+        servos.setup_pts()
 
         print('ready - press Ctrl-C to stop')
         while True:
