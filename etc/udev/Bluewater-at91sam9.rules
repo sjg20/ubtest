@@ -1,0 +1,5 @@
+SUBSYSTEM!="usb_device", ACTION!="add", GOTO="Bluewater-at91sam9_rules_end"
+# Atmel Corp. at91sam SAMBA bootloader
+SYSFS{idVendor}=="03eb", SYSFS{idProduct}=="6124", MODE="0666"
+LABEL="Bluewater-at91sam9_rules_end"
+

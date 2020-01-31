@@ -1,0 +1,7 @@
+ACTION=="add" \
+, ATTR{removable}=="1"
+, KERNEL=="sd*" \
+, SUBSYSTEM=="block" \
+, KERNELS=="4-10.4.3.1" \
+, SYMLINK+="sdcard0" \
+, RUN+="/bin/chmod 777 /dev/$name"

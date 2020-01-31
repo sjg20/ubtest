@@ -1,0 +1,13 @@
+ACTION=="add" \
+, KERNEL=="ttyUSB*" \
+, SUBSYSTEM=="tty" \
+, KERNELS=="4-10.2.1" \
+, MODE="0666" \
+, SYMLINK+="ttyusb_port1"
+
+ACTION=="add" \
+, KERNEL=="ttyUSB*" \
+, SUBSYSTEM=="tty" \
+, KERNELS=="4-10.2.2" \
+, MODE="0666" \
+, SYMLINK+="ttyusb_port2"
