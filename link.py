@@ -7,6 +7,7 @@ class Link(
 ):
     name = "Link"
     servo_name = "link"
+    ether_mac = "94:eb:2c:00:03:b6"
 
 # Linux machine
 #

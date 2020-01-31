@@ -16,6 +16,8 @@ class Rpi3(
 
     sdwire_serial = "sdwire-18"
 
+    ether_mac = "b8:27:eb:b4:f9:f2"
+
     def poweron(self) -> None:
         """Procedure to turn power on."""
 

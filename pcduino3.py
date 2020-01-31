@@ -16,6 +16,8 @@ class Pcduino3(
 
     sdwire_serial = "sdwire-7"
 
+    ether_mac = "02:4f:04:03:26:d1"
+
     def poweron(self) -> None:
         """Procedure to turn power on."""
 

@@ -7,6 +7,7 @@ class NyanBig(
 ):
     name = "Nyan Big"
     servo_name = "nyan-big"
+    ether_mac = "94:eb:2c:15:84:a3";
 
 # Linux machine
 #

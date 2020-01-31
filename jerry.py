@@ -7,6 +7,7 @@ class Jerry(
 ):
     name = "Jerry"
     servo_name = "jerry"
+    ether_mac = "00:1a:11:30:09:25";
 
 # Linux machine
 #
