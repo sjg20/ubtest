@@ -32,7 +32,7 @@ shadow:x:42:
 utmp:x:43:
 video:x:44:
 sasl:x:45:
-plugdev:x:46:sglass
+plugdev:x:46:sglass,gitlab-runner
 staff:x:50:
 games:x:60:
 users:x:100:
