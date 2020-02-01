@@ -118,6 +118,14 @@ make
 sudo make install
 
 
+Digital Loggers Inc
+
+http://www.digital-loggers.com/lpc7man.pdf
+git clone https://github.com/dwighthubbard/python-dlipower
+cd python-dlipower
+sudo python3 setup.py install
+
+
 sudo systemctl edit systemd-udevd
 [Service]
 MountFlags=shared
@@ -183,4 +191,7 @@ test/py/test.py -B jetson-tk1 --id sjg-tk1 --build-dir ../current/jetson-tk1 -k 
 
 PATH=$PATH:tools/buildman ARCH=`buildman -a chromebook_link` CROSS_COMPILE=`buildman -A chromebook_link` \
 test/py/test.py -B chromebook_link --id sjg-link --build-dir ../current/chromebook_link -k help
+
+PATH=$PATH:tools/buildman ARCH=`buildman -a orangepi_pc$` CROSS_COMPILE=`buildman -A orangepi_pc$` \
+test/py/test.py -B orangepi_pc --id sjg-opi_pc --build-dir ../current/orangepi_pc -k help --build
 
