@@ -33,3 +33,10 @@ ACTION=="add" \
 , MODE="0666" \
 , SYMLINK+="ttyusb_port5"
 
+ACTION=="add" \
+, KERNEL=="ttyUSB*" \
+, SUBSYSTEM=="tty" \
+, KERNELS=="4-9.2.2" \
+, MODE="0666" \
+, SYMLINK+="ttyusb_port6"
+

@@ -30,3 +30,11 @@ ACTION=="add" \
 , MODE="0666" \
 , SYMLINK+="sdwire3"
 
+ACTION=="add" \
+, SUBSYSTEM=="usb" \
+, ATTR{idProduct}=="6001" \
+, ATTR{idVendor}=="04e8" \
+, ATTR{serial}=="202001064005" \
+, MODE="0666" \
+, SYMLINK+="sdwire4"
+
