@@ -39,6 +39,8 @@ dev_types = {
    'sdwire': [0x04e8, 0x6001],
    'ttyusb': [0x067b, 0x2303],
    'ykusb': [0x04d8, 0xf2f7],
+   'tegra': [0x0955, 0x7140],
+   'relay': [0x16c0, 0x05df],
 }
 
 for dev_type, (vendor, product) in dev_types.items():
