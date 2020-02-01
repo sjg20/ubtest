@@ -195,3 +195,6 @@ test/py/test.py -B chromebook_link --id sjg-link --build-dir ../current/chromebo
 PATH=$PATH:tools/buildman ARCH=`buildman -a orangepi_pc$` CROSS_COMPILE=`buildman -A orangepi_pc$` \
 test/py/test.py -B orangepi_pc --id sjg-opi_pc --build-dir ../current/orangepi_pc -k help --build
 
+PATH=$PATH:tools/buildman ARCH=`buildman -a zynq_zybo` CROSS_COMPILE=`buildman -A zynq_zybo` \
+test/py/test.py -B zynq_zybo --id sjg-zynq_zybo --build-dir ../current/zynq_zybo -k help --build
+
