@@ -119,9 +119,10 @@ sudo make install
 
 
 sudo systemctl edit systemd-udevd
+[Service]
 MountFlags=shared
 
-cat /etc/systemd/system/systemd-udevd.service
+cat /etc/systemd/system/systemd-udevd.service.d/override.conf
 
 
 gitlab
