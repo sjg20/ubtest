@@ -13,3 +13,11 @@ ACTION=="add" \
 , ATTR{serial}=="sdwire-7" \
 , MODE="0666" \
 , SYMLINK+="sdwire1"
+
+ACTION=="add" \
+, SUBSYSTEM=="usb" \
+, ATTR{idProduct}=="6001" \
+, ATTR{idVendor}=="04e8" \
+, ATTR{serial}=="202001064004" \
+, MODE="0666" \
+, SYMLINK+="sdwire2"
