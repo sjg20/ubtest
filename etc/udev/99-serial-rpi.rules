@@ -29,20 +29,20 @@ ACTION=="add" \
 ACTION=="add" \
 , KERNEL=="ttyUSB*" \
 , SUBSYSTEM=="tty" \
-, KERNELS=="4-9.2.1:1.1" \
+, KERNELS=="6-2.2.1:1.1" \
 , MODE="0666" \
 , SYMLINK+="ttyusb_port5"
 
 ACTION=="add" \
 , KERNEL=="ttyUSB*" \
 , SUBSYSTEM=="tty" \
-, KERNELS=="4-9.2.2" \
+, KERNELS=="6-2.2.2" \
 , MODE="0666" \
 , SYMLINK+="ttyusb_port6"
 
 ACTION=="add" \
 , KERNEL=="ttyUSB*" \
 , SUBSYSTEM=="tty" \
-, KERNELS=="4-9.2.3" \
+, KERNELS=="6-2.2.3" \
 , MODE="0666" \
 , SYMLINK+="ttyusb_port7"

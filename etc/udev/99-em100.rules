@@ -1,5 +1,5 @@
 ACTION=="add" \
-, KERNELS=="4-9.3.1" \
+, KERNELS=="6-2.3.1" \
 , ATTR{idProduct}=="1235" \
 , ATTR{idVendor}=="04b4" \
 , MODE="0666" \
