@@ -21,3 +21,11 @@ ACTION=="add" \
 , KERNELS=="6-2.4.2.1" \
 , SYMLINK+="sdcard2" \
 , MODE="0666"
+
+ACTION=="add" \
+, ATTR{removable}=="1"
+, KERNEL=="sd*" \
+, SUBSYSTEM=="block" \
+, KERNELS=="6-2.4.3.1" \
+, SYMLINK+="sdcard3" \
+, MODE="0666"
