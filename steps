@@ -188,9 +188,11 @@ cd u-boot
 buildman -k rpi_3_32b
 test/py/test.py -B rpi_3_32b --id sjg-rpi_3b --build-dir ../current/rpi_3_32b -k help
 test/py/test.py -B Linksprite_pcDuino3 --id sjg-pcduino3 --build-dir ../current/Linksprite_pcDuino3 -k help
-test/py/test.py -B jetson-tk1 --id sjg-tk1 --build-dir ../current/jetson-tk1 -k help
 
-BUILD_ROM=1 PATH=$PATH:tools/buildman ARCH=`buildman -a chromebook_link` CROSS_COMPILE=`buildman -A chromebook_link` test/py/test.py -B chromebook_link --id sjg-link --build-dir ../current/chromebook_link --build
+PATH=$PATH:tools/buildman ARCH=`buildman -a jetson-tk1` CROSS_COMPILE=`buildman -A jetson-tk1` test/py/test.py -B jetson-tk1 --id sjg-tk1 --build-dir ../current/jetson-tk1 -k help
+
+PATH=$PATH:tools/buildman ARCH=`buildman -a chromebook_link` CROSS_COMPILE=`buildman -A chromebook_link` \
+test/py/test.py -B chromebook_link --id sjg-link --build-dir ../current/chromebook_link -k help
 
 PATH=$PATH:tools/buildman ARCH=`buildman -a orangepi_pc$` CROSS_COMPILE=`buildman -A orangepi_pc$` \
 test/py/test.py -B orangepi_pc --id sjg-opi_pc --build-dir ../current/orangepi_pc -k help --build
@@ -198,7 +200,5 @@ test/py/test.py -B orangepi_pc --id sjg-opi_pc --build-dir ../current/orangepi_p
 PATH=$PATH:tools/buildman ARCH=`buildman -a zynq_zybo` CROSS_COMPILE=`buildman -A zynq_zybo` \
 test/py/test.py -B zynq_zybo --id sjg-zynq_zybo --build-dir ../current/zynq_zybo -k help --build
 
-BUILD_ROM=1 PATH=$PATH:tools/buildman ARCH=`buildman -a minnowmax` CROSS_COMPILE=`buildman -A minnowmax` \
+PATH=$PATH:tools/buildman ARCH=`buildman -a minnowmax` CROSS_COMPILE=`buildman -A minnowmax` \
 test/py/test.py -B minnowmax --id sjg-minnowmax --build-dir ../current/minnowmax -k help --build
-
-PATH=$PATH:tools/buildman ARCH=`buildman -a rock2` CROSS_COMPILE=`buildman -A rock2` test/py/test.py -B rock2 --id sjg-rock2 --build-dir ../current/rock2 -k help --build
