@@ -2,7 +2,8 @@
 sudo apt-get install git-core gitk git-gui curl lvm2 thin-provisioning-tools \
      python-pkg-resources python-virtualenv python-oauth2client xz-utils \
      build-essential pkg-config picocom flex bison device-tree-compiler \
-     libisl15 python3-pytest
+     libisl15 python3-pytest binutils-arm-linux-gnueabi
+
 sudo mkdir /cosarm
 sudo chown sglass:sglass /cosarm
 cd /cosarm
