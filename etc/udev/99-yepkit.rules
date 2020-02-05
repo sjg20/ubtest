@@ -1,4 +1,4 @@
-ACTION=="add" \
+ACTION=="add|bind" \
 , SUBSYSTEM=="usb" \
 , ATTR{idProduct}=="f2f7" \
 , ATTR{idVendor}=="04d8" \

@@ -1,4 +1,4 @@
-ACTION=="add" \
+ACTION=="add|bind" \
 , SUBSYSTEM=="usb" \
 , ATTR{idProduct}=="6001" \
 , ATTR{idVendor}=="04e8" \
@@ -6,7 +6,7 @@ ACTION=="add" \
 , MODE="0666" \
 , SYMLINK+="sdwire0"
 
-ACTION=="add" \
+ACTION=="add|bind" \
 , SUBSYSTEM=="usb" \
 , ATTR{idProduct}=="6001" \
 , ATTR{idVendor}=="04e8" \
@@ -14,7 +14,7 @@ ACTION=="add" \
 , MODE="0666" \
 , SYMLINK+="sdwire1"
 
-ACTION=="add" \
+ACTION=="add|bind" \
 , SUBSYSTEM=="usb" \
 , ATTR{idProduct}=="6001" \
 , ATTR{idVendor}=="04e8" \
@@ -22,7 +22,7 @@ ACTION=="add" \
 , MODE="0666" \
 , SYMLINK+="sdwire2"
 
-ACTION=="add" \
+ACTION=="add|bind" \
 , SUBSYSTEM=="usb" \
 , ATTR{idProduct}=="6001" \
 , ATTR{idVendor}=="04e8" \
@@ -30,7 +30,7 @@ ACTION=="add" \
 , MODE="0666" \
 , SYMLINK+="sdwire3"
 
-ACTION=="add" \
+ACTION=="add|bind" \
 , SUBSYSTEM=="usb" \
 , ATTR{idProduct}=="6001" \
 , ATTR{idVendor}=="04e8" \
@@ -38,7 +38,7 @@ ACTION=="add" \
 , MODE="0666" \
 , SYMLINK+="sdwire4"
 
-ACTION=="add" \
+ACTION=="add|bind" \
 , SUBSYSTEM=="usb" \
 , ATTR{idProduct}=="6001" \
 , ATTR{idVendor}=="04e8" \

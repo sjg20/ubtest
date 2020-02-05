@@ -1,4 +1,4 @@
-ACTION=="add" \
+ACTION=="add|bind" \
 , SUBSYSTEMS=="usb" \
 , KERNELS=="4-10.1.1" \
 , SYMLINK+="usbdev-jetson-tk1" \
