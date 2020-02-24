@@ -45,3 +45,19 @@ ACTION=="add|bind" \
 , ATTR{serial}=="201912160005" \
 , MODE="0666" \
 , SYMLINK+="sdwire5"
+
+ACTION=="add|bind" \
+, SUBSYSTEM=="usb" \
+, ATTR{idProduct}=="6001" \
+, ATTR{idVendor}=="04e8" \
+, ATTR{serial}=="202001064003" \
+, MODE="0666" \
+, SYMLINK+="sdwire6"
+
+ACTION=="add|bind" \
+, SUBSYSTEM=="usb" \
+, ATTR{idProduct}=="6001" \
+, ATTR{idVendor}=="04e8" \
+, ATTR{serial}=="202001064002" \
+, MODE="0666" \
+, SYMLINK+="sdwire7"
