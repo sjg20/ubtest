@@ -194,6 +194,9 @@ PATH=$PATH:tools/buildman ARCH=`buildman -a jetson-tk1` CROSS_COMPILE=`buildman 
 PATH=$PATH:tools/buildman ARCH=`buildman -a chromebook_link` CROSS_COMPILE=`buildman -A chromebook_link` \
 test/py/test.py -B chromebook_link --id sjg-link --build-dir ../current/chromebook_link -k help
 
+PATH=$PATH:tools/buildman ARCH=`buildman -a chromebook_samus` CROSS_COMPILE=`buildman -A chromebook_samus` \
+test/py/test.py -B chromebook_samus --id sjg-samus --build-dir ../current/chromebook_samus -k help
+
 PATH=$PATH:tools/buildman ARCH=`buildman -a orangepi_pc$` CROSS_COMPILE=`buildman -A orangepi_pc$` \
 test/py/test.py -B orangepi_pc --id sjg-opi_pc --build-dir ../current/orangepi_pc -k help --build
 
