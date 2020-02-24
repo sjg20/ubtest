@@ -2,6 +2,19 @@ import tbot
 from tbot.machine import board, channel, connector, linux
 from ykush import Ykush
 from sdwire import Sdwire
+from tbot.tc import uboot
+
+
+# The builder is a "configuration" of the U-Boot build for this board.  In its
+# simplest form you just need to configure the defconfig and toolchain which
+# should be used.
+class Pcduino3UBootBuilder(uboot.UBootBuilder):
+    name = "pcduino3"
+    # Is this the correct defconfig?
+    defconfig = "Linksprite_pcDuino3_defconfig"
+    # As defined in the lab-config (kea.py)
+    toolchain = "armv7-a"
+
 
 class Pcduino3(
     connector.ConsoleConnector,
@@ -41,6 +54,19 @@ class Pcduino3(
         # telnet, picocom or kermit do.  The minicom behavior will not work.
         return mach.open_channel("picocom", "-b", "115200", "/dev/ttyusb_port2")
 
+
+# Not sure if this the correct config for this boards U-Boot ... It does not
+# matter if you just care about building U-Boot though.
+class Pcduino3UBoot(
+    board.Connector,
+    board.UBootAutobootIntercept,
+    board.UBootShell,
+):
+    prompt = "=> "
+
+    build = Pcduino3UBootBuilder()
+
+
 # Linux machine
 #
 # We use a config which boots directly to Linux without interaction
@@ -57,5 +83,6 @@ class Pcduino3Linux(
 
 # tbot will check for `BOARD`, don't forget to set it!
 BOARD = Pcduino3
+UBOOT = Pcduino3UBoot
 # You need to set `LINUX` now as well.
 LINUX = Pcduino3Linux

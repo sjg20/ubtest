@@ -1,10 +1,30 @@
 import tbot
 from tbot.machine import connector, linux
 
+
+class ArmV7Toolchain(linux.build.Toolchain):
+    def enable(self, host):
+        # Set all environment variables to "enable" this toolchain
+        prefix = "~/.buildman-toolchains/gcc-7.3.0-nolibc/arm-linux-gnueabi/bin/arm-linux-gnueabi-"
+        host.env("CROSS_COMPILE", prefix)
+        host.env("ARCH", "arm")
+
+        for tool in [
+            "gcc", "objdump", "size", "ar", "nm", "strings",
+            "as", "ld", "objcopy", "readelf", "strip",
+        ]:
+            host.env(tool.upper(), prefix + tool)
+
+        # Optionally set CFLAGS and LDFLAGS
+        # host.env("CFLAGS", "...")
+        # host.env("LDFLAGS", "...")
+
+
 class KeaLab(
     connector.ParamikoConnector,
     linux.Bash,
     linux.Lab,
+    linux.Builder,
 ):
     name = "sglass"
     hostname = "kea"
@@ -12,6 +32,19 @@ class KeaLab(
     @property
     def workdir(self):
         return linux.Workdir.athome(self, "tbot-workdir")
+
+    @property
+    def toolchains(self):
+        # Should return a dict of all toolchains available on this host.  Each
+        # toolchain is identified by a (unique) string.  For pcduino3 in this
+        # example, a toolchain named `armv7-a` is defined.
+        return {
+            "armv7-a": ArmV7Toolchain,
+        }
+
+    def build(self):
+        # Kea is also used as the build-host so just return (a cloned) self
+        return self.clone()
 
 
 # tbot will check for `LAB`, don't forget to set it!
