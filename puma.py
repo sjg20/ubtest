@@ -14,8 +14,9 @@ class PumaPc(
     Sdwire,
 ):
     name = "puma"
-    usbrelay_power=8
-    usbrelay_reset=7
+    usbrelay_name = "6QMBS_"
+    usbrelay_power = 8
+    usbrelay_reset = 7
 
     dli_hostname = "192.168.4.19"
     dli_user = "admin"

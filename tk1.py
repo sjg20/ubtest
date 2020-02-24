@@ -11,6 +11,7 @@ class Tk1(
 ):
     name = "tk1"
 
+    usbrelay_name = "6QMBS_"
     usbrelay_power=1
     usbrelay_reset=2
     usbrelay_recovery=3

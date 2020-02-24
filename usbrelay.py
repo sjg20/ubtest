@@ -19,4 +19,5 @@ class Usbrelay(object):
         self.usbrelay_set(self.usbrelay_recovery, value)
 
     def usbrelay_set(self, relay, value):
-        self.host.exec0("usbrelay", "6QMBS_%d=%d" % (relay, value))
+        self.host.exec0("usbrelay", "%s%d=%d" %
+                        (self.usbrelay_name, relay, value))
