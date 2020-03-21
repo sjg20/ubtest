@@ -178,6 +178,7 @@ tbot -l kea.py -b rpi3.py -t uname.py test_uname -vv
 tbot -l kea.py -b rpi3.py interactive_board
 tbot -l kea.py -b tk1.py interactive_board
 
+tbot -l kea.py -b pcduino3.py  uboot_build -p clean=False
 
 systemctl daemon-reload
 systemctl stop gitlab-runner
