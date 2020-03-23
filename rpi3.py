@@ -1,7 +1,21 @@
+import time
+
 import tbot
 from tbot.machine import board, channel, connector, linux
+from tbot.tc import git, shell, uboot
 from ykush import Ykush
 from sdwire import Sdwire
+
+# The builder is a "configuration" of the U-Boot build for this board.  In its
+# simplest form you just need to configure the defconfig and toolchain which
+# should be used.
+class Rpi3UBootBuilder(uboot.UBootBuilder):
+    name = "rpi_3"
+    # Is this the correct defconfig?
+    defconfig = "rpi_3_32b_defconfig"
+    # As defined in the lab-config (kea.py)
+    toolchain = "armv7-a"
+
 
 class Rpi3(
     connector.ConsoleConnector,
@@ -17,6 +31,9 @@ class Rpi3(
     sdwire_serial = "sdwire-18"
 
     ether_mac = "b8:27:eb:b4:f9:f2"
+
+    mount_uuid = "B529-9710"
+    mount_point = "rpi3_b_boot"
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
@@ -41,6 +58,66 @@ class Rpi3(
         # telnet, picocom or kermit do.  The minicom behavior will not work.
         return mach.open_channel("picocom", "-b", "115200", "/dev/ttyusb_port1")
 
+    def flash(self, repo: git.GitRepository) -> None:
+        board = self
+        host = self.host
+        #pp = pprint.PrettyPrinter()
+        #pp.pprint(self.__dict__)
+        board.poweroff()
+        out = host.exec0("whoami")
+        print("out", out)
+        done = False
+        for i in range(5):
+            out = ""
+            try:
+                retcode, out = host.exec("mount", "UUID=%s" % self.mount_uuid)
+                done = retcode == 0
+                if done:
+                    break
+            except Exception as e:
+                pass
+            if "already mounted" in out:
+                # If it is already mounted, try to unmount it first. It may have
+                # been mounted by another user so we won't have the access we
+                # need. If this gives an error then it might be transient, e.g.
+                # "Operation not permitted" is sometimes returned when there are
+                # I/O errors on the device.
+                host.exec("umount", "UUID=%s" % self.mount_uuid)
+            time.sleep(1)
+        if not done:
+            raise ValueError("Cannot access mount '%s'" % board.mount_uuid)
+
+        # Enable the UART and fix the GPU frequency so it works correctly
+        config = "/media/%s/config.txt" % self.mount_point
+        host.exec0("sed", "-i", "/enable_uart/c\enable_uart = 1", config)
+        retcode, _ = host.exec("grep", "-q", "^gpu_freq=250", config)
+        if retcode:
+            host.exec0("bash", "-c", "echo gpu_freq=250 >>%s" % config)
+
+        # Copy U-Boot over from the build directory
+        shell.copy(repo / "u-boot.bin",
+                   host.fsroot / ("/media/%s/rpi3-u-boot.bin" %
+                                  self.mount_point))
+        #host.exec0(repo / "u-boot.bin", "%s/rpi3-u-boot.bin" % self.mount_point)
+
+        print("host", self.host)
+        print("repo", repo / "fred")
+
+        host.exec0("umount", "UUID=%s" % self.mount_uuid)
+
+        board.sdwire_dut()
+
+# Not sure if this the correct config for this boards U-Boot ... It does not
+# matter if you just care about building U-Boot though.
+class Rpi3UBoot(
+    board.Connector,
+    board.UBootAutobootIntercept,
+    board.UBootShell,
+):
+    prompt = "=> "
+
+    build = Rpi3UBootBuilder()
+
 # Linux machine
 #
 # We use a config which boots directly to Linux without interaction
@@ -57,5 +134,6 @@ class Rpi3Linux(
 
 # tbot will check for `BOARD`, don't forget to set it!
 BOARD = Rpi3
+UBOOT = Rpi3UBoot
 # You need to set `LINUX` now as well.
 LINUX = Rpi3Linux

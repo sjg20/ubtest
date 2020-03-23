@@ -39,7 +39,7 @@ class KeaLab(
         # toolchain is identified by a (unique) string.  For pcduino3 in this
         # example, a toolchain named `armv7-a` is defined.
         return {
-            "armv7-a": ArmV7Toolchain,
+            "armv7-a": ArmV7Toolchain(),
         }
 
     def build(self):
