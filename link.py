@@ -21,8 +21,20 @@ class LinkLinux(
     # Password.  If you don't need a password, set this to `None`
     password = "test0000"
 
+# Not sure if this the correct config for this boards U-Boot ... It does not
+# matter if you just care about building U-Boot though.
+class LinkUBoot(
+    board.Connector,
+    board.UBootAutobootIntercept,
+    board.UBootShell,
+):
+    prompt = "=> "
+
+    build = LinkBootBuilder()
+
 
 # tbot will check for `BOARD`, don't forget to set it!
 BOARD = Link
+UBOOT = LinkUBoot
 # You need to set `LINUX` now as well.
 LINUX = LinkLinux

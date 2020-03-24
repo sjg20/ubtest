@@ -9,7 +9,6 @@ class Ykush(object):
         ykush_port: Port number on that device
     """
     def ykush_on(self):
-        print("ykush_on")
         self.host.exec0('ykushcmd', '-s', self.ykush_serial,
                         '-u', self.ykush_port)
 

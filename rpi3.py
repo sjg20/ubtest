@@ -65,7 +65,6 @@ class Rpi3(
         #pp.pprint(self.__dict__)
         board.poweroff()
         out = host.exec0("whoami")
-        print("out", out)
         done = False
         for i in range(5):
             out = ""
