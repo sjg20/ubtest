@@ -59,6 +59,18 @@ class ZynqZybo(
         # telnet, picocom or kermit do.  The minicom behavior will not work.
         return mach.open_channel("picocom", "-b", "115200", self.uart_port)
 
+# Not sure if this the correct config for this boards U-Boot ... It does not
+# matter if you just care about building U-Boot though.
+class ZynqZyboUBoot(
+    board.Connector,
+    board.UBootAutobootIntercept,
+    board.UBootShell,
+):
+    prompt = "Zynq> "
+
+    #build = LinkUBootBuilder()
+
+
 # Linux machine
 #
 # We use a config which boots directly to Linux without interaction
@@ -75,5 +87,6 @@ class ZynqZyboLinux(
 
 # tbot will check for `BOARD`, don't forget to set it!
 BOARD = ZynqZybo
+UBOOT = ZynqZyboUBoot
 # You need to set `LINUX` now as well.
 LINUX = ZynqZyboLinux

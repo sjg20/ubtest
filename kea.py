@@ -20,6 +20,23 @@ class ArmV7Toolchain(linux.build.Toolchain):
         # host.env("LDFLAGS", "...")
 
 
+class I386Toolchain(linux.build.Toolchain):
+    def enable(self, host):
+        # Set all environment variables to "enable" this toolchain
+        prefix = "~/.buildman-toolchains/gcc-7.3.0-nolibc/i386-linux/bin/i386-linux-"
+        host.env("CROSS_COMPILE", prefix)
+
+        for tool in [
+            "gcc", "objdump", "size", "ar", "nm", "strings",
+            "as", "ld", "objcopy", "readelf", "strip",
+        ]:
+            host.env(tool.upper(), prefix + tool)
+
+        # Optionally set CFLAGS and LDFLAGS
+        host.env("BUILD_ROM", "1")
+        # host.env("LDFLAGS", "...")
+
+
 class KeaLab(
     connector.ParamikoConnector,
     linux.Bash,
@@ -40,6 +57,7 @@ class KeaLab(
         # example, a toolchain named `armv7-a` is defined.
         return {
             "armv7-a": ArmV7Toolchain(),
+            "i386": I386Toolchain(),
         }
 
     def build(self):

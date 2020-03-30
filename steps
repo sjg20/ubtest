@@ -119,6 +119,12 @@ make
 sudo make install
 
 
+Set up a git server on your dev machine so tbot can access your repo without
+needing to push it:
+
+https://git-scm.com/book/en/v2/Git-on-the-Server-Git-Daemon
+
+
 Digital Loggers Inc
 
 http://www.digital-loggers.com/lpc7man.pdf

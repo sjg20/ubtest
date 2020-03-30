@@ -6,14 +6,9 @@ from tbot.tc import git, shell, uboot
 from ykush import Ykush
 from sdwire import Sdwire
 
-# The builder is a "configuration" of the U-Boot build for this board.  In its
-# simplest form you just need to configure the defconfig and toolchain which
-# should be used.
 class Rpi3UBootBuilder(uboot.UBootBuilder):
     name = "rpi_3"
-    # Is this the correct defconfig?
     defconfig = "rpi_3_32b_defconfig"
-    # As defined in the lab-config (kea.py)
     toolchain = "armv7-a"
 
 
@@ -37,10 +32,6 @@ class Rpi3(
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
-
-        # You can access the labhost as `self.host` (if you use the
-        # ConsoleConnector).  In this case I have a simple command to
-        # toggle power.
         self.sdwire_dut()
         self.ykush_reset()
 
@@ -50,19 +41,12 @@ class Rpi3(
         self.sdwire_ts()
 
     def connect(self, mach) -> channel.Channel:
-        """Connect to the boards serial interface."""
-
-        # `mach.open_channel` 'steals' mach's channel and runs the
-        # given command to connect to the serial console.  Your command
-        # should just connect its tty to the serial console like rlogin,
-        # telnet, picocom or kermit do.  The minicom behavior will not work.
+        """Connect to the board's serial interface."""
         return mach.open_channel("picocom", "-b", "115200", "/dev/ttyusb_port1")
 
     def flash(self, repo: git.GitRepository) -> None:
         board = self
         host = self.host
-        #pp = pprint.PrettyPrinter()
-        #pp.pprint(self.__dict__)
         board.poweroff()
         out = host.exec0("whoami")
         done = False
@@ -97,42 +81,30 @@ class Rpi3(
         shell.copy(repo / "u-boot.bin",
                    host.fsroot / ("/media/%s/rpi3-u-boot.bin" %
                                   self.mount_point))
-        #host.exec0(repo / "u-boot.bin", "%s/rpi3-u-boot.bin" % self.mount_point)
-
-        print("host", self.host)
-        print("repo", repo / "fred")
 
         host.exec0("umount", "UUID=%s" % self.mount_uuid)
 
         board.sdwire_dut()
 
-# Not sure if this the correct config for this boards U-Boot ... It does not
-# matter if you just care about building U-Boot though.
+
 class Rpi3UBoot(
     board.Connector,
     board.UBootAutobootIntercept,
     board.UBootShell,
 ):
     prompt = "=> "
-
     build = Rpi3UBootBuilder()
 
-# Linux machine
-#
-# We use a config which boots directly to Linux without interaction
-# with a bootloader for this example.
+
 class Rpi3Linux(
     board.Connector,
     board.LinuxBootLogin,
     linux.Bash,
 ):
-    # Username for logging in once linux has booted
     username = "pi"
-    # Password.  If you don't need a password, set this to `None`
     password = "raspberry"
 
-# tbot will check for `BOARD`, don't forget to set it!
+
 BOARD = Rpi3
 UBOOT = Rpi3UBoot
-# You need to set `LINUX` now as well.
 LINUX = Rpi3Linux
