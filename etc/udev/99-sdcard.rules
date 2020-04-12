@@ -2,7 +2,7 @@ ACTION=="add" \
 , ATTR{removable}=="1"
 , KERNEL=="sd*" \
 , SUBSYSTEM=="block" \
-, KERNELS=="4-10.4.3.1" \
+, KERNELS=="1-5.4.2.1" \
 , SYMLINK+="sdcard0" \
 , MODE="0666"
 

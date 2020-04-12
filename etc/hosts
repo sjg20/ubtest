@@ -2,6 +2,7 @@
 127.0.1.1	kea
 
 192.168.4.1	palo
+192.168.4.7	ellesmere
 192.168.4.8	live
 
 # The following lines are desirable for IPv6 capable hosts

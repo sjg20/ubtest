@@ -67,3 +67,4 @@ sambashare:x:126:sglass
 gitlab-runner:x:999:
 sglass:x:1500:sglass
 public:x:1505:sglass
+docker:x:127:

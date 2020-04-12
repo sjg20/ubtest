@@ -29,7 +29,7 @@ ACTION=="add" \
 ACTION=="add" \
 , KERNEL=="ttyUSB*" \
 , SUBSYSTEM=="tty" \
-, KERNELS=="1-5.2.1" \
+, KERNELS=="1-5.2.1:1.1" \
 , MODE="0666" \
 , SYMLINK+="ttyusb_port5"
 

@@ -11,3 +11,11 @@ ACTION=="add|bind" \
 , ATTR{idVendor}=="04b4" \
 , MODE="0666" \
 , SYMLINK+="em100_1"
+
+ACTION=="add|bind" \
+, KERNELS=="6-2.2.4" \
+, ATTR{idProduct}=="1235" \
+, ATTR{idVendor}=="04b4" \
+, MODE="0666" \
+, SYMLINK+="em100_2"
+
