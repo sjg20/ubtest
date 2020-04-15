@@ -1,31 +1,32 @@
 import tbot
 from tbot.machine import board, channel, connector, linux
+from tbot.tc import git, shell, uboot
 from dli import Dli
 from sdwire import Sdwire
+
+class Opi_PcUBootBuilder(uboot.UBootBuilder):
+    name = "opi_pc"
+    defconfig = "orangepi_pc_defconfig"
+    toolchain = "armv7-a"
 
 class OrangepiPc(
     connector.ConsoleConnector,
     board.PowerControl,
     board.Board,
     Dli,
-    Sdwire,
+    Sdwire
 ):
-    name = "pcDuino3"
+    name = "Orange Pi PC"
     dli_hostname = "192.168.4.19"
-    dli_user = "admin"
-    dli_password = "1234"
     dli_outlet = 1
-
+    dli_password = "1234"
+    dli_user = "admin"
     sdwire_serial = "202001064004"
 
     #ether_mac = "02:4f:04:03:26:d1"
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
-
-        # You can access the labhost as `self.host` (if you use the
-        # ConsoleConnector).  In this case I have a simple command to
-        # toggle power.
         self.sdwire_dut()
         self.dli_on()
 
@@ -35,26 +36,15 @@ class OrangepiPc(
         self.sdwire_ts()
 
     def connect(self, mach) -> channel.Channel:
-        """Connect to the boards serial interface."""
-
-        # `mach.open_channel` 'steals' mach's channel and runs the
-        # given command to connect to the serial console.  Your command
-        # should just connect its tty to the serial console like rlogin,
-        # telnet, picocom or kermit do.  The minicom behavior will not work.
+        """Connect to the board's serial interface."""
         return mach.open_channel("picocom", "-b", "115200", "/dev/ttyusb_port4")
 
-# Linux machine
-#
-# We use a config which boots directly to Linux without interaction
-# with a bootloader for this example.
 class OrangepiPcLinux(
     board.Connector,
     board.LinuxBootLogin,
     linux.Bash,
 ):
-    # Username for logging in once linux has booted
     username = ""
-    # Password.  If you don't need a password, set this to `None`
     password = ""
 
 # tbot will check for `BOARD`, don't forget to set it!

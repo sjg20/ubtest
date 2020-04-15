@@ -3,32 +3,29 @@ import time
 import tbot
 from tbot.machine import board, channel, connector, linux
 from tbot.tc import git, shell, uboot
-from ykush import Ykush
 from sdwire import Sdwire
+from ykush import Ykush
 
 class Rpi3UBootBuilder(uboot.UBootBuilder):
     name = "rpi_3"
     defconfig = "rpi_3_32b_defconfig"
     toolchain = "armv7-a"
 
-
 class Rpi3(
     connector.ConsoleConnector,
     board.PowerControl,
     board.Board,
-    Ykush,
     Sdwire,
+    Ykush
 ):
     name = "Raspberry Pi 3b"
-    ykush_serial = "YK17698"
-    ykush_port = "1"
-
+    mount_point = "rpi3_b_boot"
+    mount_uuid = "B529-9710"
     sdwire_serial = "sdwire-18"
+    ykush_port = "1"
+    ykush_serial = "YK17698"
 
     ether_mac = "b8:27:eb:b4:f9:f2"
-
-    mount_uuid = "B529-9710"
-    mount_point = "rpi3_b_boot"
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
