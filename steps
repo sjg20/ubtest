@@ -186,6 +186,13 @@ tbot -l kea.py -b tk1.py interactive_board
 
 tbot -l kea.py -b pcduino3.py  uboot_build -p clean=False
 
+tbot -l kea.py -b rpi3.py uboot_checkout -p rev=\"995972ddbbc\"
+
+tbot -l kea.py -b rpi3.py -T tbot/contrib uboot_build_and_flash interactive_board
+
+/vid/software/devel/ubtest/do-try-int.sh rpi3 HEAD
+
+
 systemctl daemon-reload
 systemctl stop gitlab-runner
 
