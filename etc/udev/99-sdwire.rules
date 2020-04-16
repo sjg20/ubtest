@@ -61,3 +61,13 @@ ACTION=="add|bind" \
 , ATTR{serial}=="202001064002" \
 , MODE="0666" \
 , SYMLINK+="sdwire7"
+
+# sdwire sdwire8
+ACTION=="add|bind" \
+, SUBSYSTEM=="usb" \
+, ATTR{idProduct}=="6001" \
+, ATTR{idVendor}=="04e8" \
+, ATTR{serial}=="sdwireda1" \
+, MODE="0666" \
+, SYMLINK+="sdwire8"
+

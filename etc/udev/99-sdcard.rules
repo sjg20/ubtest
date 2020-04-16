@@ -1,3 +1,4 @@
+# sdwire sdwire1
 ACTION=="add" \
 , ATTR{removable}=="1" \
 , KERNEL=="sd*" \
@@ -6,6 +7,7 @@ ACTION=="add" \
 , SYMLINK+="sdcard0" \
 , MODE="0666"
 
+# sdwire sdwire2
 ACTION=="add" \
 , ATTR{removable}=="1" \
 , KERNEL=="sd*" \
@@ -29,3 +31,13 @@ ACTION=="add" \
 , KERNELS=="6-2.4.3.1" \
 , SYMLINK+="sdcard3" \
 , MODE="0666"
+
+# sdwire sdwire5
+ACTION=="add" \
+, ATTR{removable}=="1" \
+, KERNEL=="sd*" \
+, SUBSYSTEM=="block" \
+, KERNELS=="1-5.1.1.1" \
+, SYMLINK+="sdcard3" \
+, MODE="0666"
+
