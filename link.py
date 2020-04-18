@@ -1,70 +1,77 @@
-import os
 import tbot
 from tbot.machine import board, channel, connector, linux
 from tbot.tc import git, shell, uboot
-from chromebook import Chromebook, ChromebookLinux
+from flash import Flash
+from blobs import Blobs
+from servo import Servo
 
-# The builder is a "configuration" of the U-Boot build for this board.  In its
-# simplest form you just need to configure the defconfig and toolchain which
-# should be used.
-class LinkUBootBuilder(uboot.UBootBuilder):
+class LinkUBootBuilder(uboot.UBootBuilder, Blobs):
     name = "link"
-    # Is this the correct defconfig?
     defconfig = "chromebook_link_defconfig"
-    # As defined in the lab-config (kea.py)
     toolchain = "i386"
+    blob_dest = "board/google/chromebook_link"
+    blob_src = "/vid/software/devel/link/bin/*.bin"
+
+    def do_patch(self, repo: git.GitRepository) -> None:
+        self.add_blobs(repo)
 
 
 class Link(
-    Chromebook
+    connector.ConsoleConnector,
+    board.PowerControl,
+    board.Board,
+    Flash,
+    Servo,
 ):
-    name = "Link"
-    servo_name = "link"
-    ether_mac = "94:eb:2c:00:03:b6"
+    name = "link"
+    desc = "Chromebook Pixel"
     em100_chip = "W25Q64FV"
     em100_serial = "DP022781"
+    servo_port = 9902
 
-    servo_name = "link"
+    ether_mac = "94:eb:2c:00:03:b6"
 
-    def add_blobs(self, path: linux.Path) -> None:
-        #shell.copy(self.host.fsroot / "/vid/software/devel/link/*.bin",
-                   #path / "board/google/chromebook_link")
-        bindir = os.path.join(path._local_str(), "board/google/chromebook_link")
-        self.host.exec0("bash", "-c",
-                        "cp /vid/software/devel/link/*.bin %s" % bindir)
+    def poweron(self) -> None:
+        """Procedure to turn power on."""
+        
+        self.servo_reset()
+
+    def poweroff(self) -> None:
+        """Procedure to turn power off."""
+        self.servo_off()
+        
+
+    def connect(self, mach) -> channel.Channel:
+        """Connect to the board's serial interface."""
+        self.console_uart = self.servo_get_tty()
+        return mach.open_channel("picocom", "-q", "-b", "115200",
+                                 self.console_uart)
 
     def flash(self, repo: git.GitRepository) -> None:
-        rom_fname = os.path.join(repo._local_str(), "u-boot.rom")
-        self.host.exec0("em100", "-x", self.em100_serial, "-s", "-p", "LOW",
-                        "-c", self.em100_chip, "-d", rom_fname, "-r")
+        self.servo_off()
+        
+        self.flash_em100(repo)
+        
 
 
-# Linux machine
-#
-# We use a config which boots directly to Linux without interaction
-# with a bootloader for this example.
-class LinkLinux(
-    ChromebookLinux
-):
-    # Username for logging in once linux has booted
-    username = "root"
-    # Password.  If you don't need a password, set this to `None`
-    password = "test0000"
-
-# Not sure if this the correct config for this boards U-Boot ... It does not
-# matter if you just care about building U-Boot though.
 class LinkUBoot(
     board.Connector,
     board.UBootAutobootIntercept,
     board.UBootShell,
 ):
     prompt = "=> "
-
     build = LinkUBootBuilder()
 
 
-# tbot will check for `BOARD`, don't forget to set it!
+class LinkLinux(
+    board.Connector,
+    board.LinuxBootLogin,
+    linux.Bash,
+):
+    username = "None"
+    password = "None"
+
+
 BOARD = Link
 UBOOT = LinkUBoot
-# You need to set `LINUX` now as well.
 LINUX = LinkLinux
