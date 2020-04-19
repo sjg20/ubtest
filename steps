@@ -219,3 +219,7 @@ test/py/test.py -B zynq_zybo --id sjg-zynq_zybo --build-dir ../current/zynq_zybo
 
 PATH=$PATH:tools/buildman ARCH=`buildman -a minnowmax` CROSS_COMPILE=`buildman -A minnowmax` \
 test/py/test.py -B minnowmax --id sjg-minnowmax --build-dir ../current/minnowmax -k help --build
+
+
+labman  -l tools/labman/kea_lab.yaml -r kea check
+labman -1 -D -l tools/labman/kea_lab.yaml emit -o /vid/software/devel/ubtest/lab_out
