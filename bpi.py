@@ -42,7 +42,6 @@ class Bpi(
 
     def connect(self, mach) -> channel.Channel:
         """Connect to the board's serial interface."""
-        
         return mach.open_channel("picocom", "-q", "-b", "115200",
                                  self.console_uart)
 

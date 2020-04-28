@@ -19,5 +19,10 @@ class Usbrelay(object):
         self.usbrelay_set(self.usbrelay_recovery, value)
 
     def usbrelay_set(self, relay, value):
-        self.host.exec0("usbrelay", "%s%d=%d" %
+        self.host.exec0("usbrelay", "%s_%s=%d" %
                         (self.usbrelay_name, relay, value))
+
+    def usbrelay_toggle_reset(self):
+        self.usbrelay_set_reset(True)
+        time.sleep(.25)
+        self.usbrelay_set_reset(False)

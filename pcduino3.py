@@ -19,7 +19,8 @@ class Pcduino3(
     Sdwire,
     Ykush,
 ):
-    name = "Linksprite pcDuino 3"
+    name = "pcduino3"
+    desc = "Linksprite pcDuino 3"
     console_uart = "/dev/ttyusb_port2"
     raw_device = "/dev/sdcard0"
     sdwire_serial = "sdwire-7"

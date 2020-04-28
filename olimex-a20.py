@@ -17,8 +17,8 @@ class Olimex_A20(
     board.PowerControl,
     board.Board,
     Flash,
-    Dli,
     Sdwire,
+    Dli,
 ):
     name = "olimex-a20"
     desc = "olimex A20-OLinuXino-MICRO"
@@ -35,7 +35,7 @@ class Olimex_A20(
     def poweron(self) -> None:
         """Procedure to turn power on."""
         self.sdwire_dut()
-        self.dli_on()
+        self.dli_reset()
 
     def poweroff(self) -> None:
         """Procedure to turn power off."""
@@ -44,7 +44,6 @@ class Olimex_A20(
 
     def connect(self, mach) -> channel.Channel:
         """Connect to the board's serial interface."""
-        
         return mach.open_channel("picocom", "-q", "-b", "115200",
                                  self.console_uart)
 

@@ -27,7 +27,7 @@ class Minnowmax(
     desc = "Minnowboard Max"
     console_uart = "/dev/ttyusb_port7"
     dli_hostname = "192.168.4.19"
-    dli_outlet = 6
+    dli_outlet = "6"
     dli_password = "1234"
     dli_user = "admin"
     em100_chip = "W25Q64DW"
@@ -37,7 +37,7 @@ class Minnowmax(
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
-        self.dli_on()
+        self.dli_reset()
 
     def poweroff(self) -> None:
         """Procedure to turn power off."""
@@ -45,15 +45,12 @@ class Minnowmax(
 
     def connect(self, mach) -> channel.Channel:
         """Connect to the board's serial interface."""
-        
         return mach.open_channel("picocom", "-q", "-b", "115200",
                                  self.console_uart)
 
     def flash(self, repo: git.GitRepository) -> None:
         self.dli_off()
-        
         self.flash_em100(repo)
-        
 
 
 class MinnowmaxUBoot(

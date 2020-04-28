@@ -7,7 +7,12 @@ from dli import Dli
 from sdwire import Sdwire
 from usbrelay import Usbrelay
 
-class ZynqZybo(
+class Zynq_ZyboUBootBuilder(uboot.UBootBuilder):
+    name = "zynq_zybo"
+    defconfig = "zynq_zybo_defconfig"
+    toolchain = "armv7-a"
+
+class Zynq_Zybo(
     connector.ConsoleConnector,
     board.PowerControl,
     board.Board,
@@ -35,10 +40,6 @@ class ZynqZybo(
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
-
-        # You can access the labhost as `self.host` (if you use the
-        # ConsoleConnector).  In this case I have a simple command to
-        # toggle power.
         self._poweron()
 
     def poweroff(self) -> None:
@@ -59,34 +60,23 @@ class ZynqZybo(
         # telnet, picocom or kermit do.  The minicom behavior will not work.
         return mach.open_channel("picocom", "-b", "115200", self.uart_port)
 
-# Not sure if this the correct config for this boards U-Boot ... It does not
-# matter if you just care about building U-Boot though.
-class ZynqZyboUBoot(
+class Zynq_ZyboUBoot(
     board.Connector,
     board.UBootAutobootIntercept,
     board.UBootShell,
 ):
     prompt = "Zynq> "
+    build = Zynq_ZyboUBootBuilder()
 
-    #build = LinkUBootBuilder()
-
-
-# Linux machine
-#
-# We use a config which boots directly to Linux without interaction
-# with a bootloader for this example.
-class ZynqZyboLinux(
+class Zynq_ZyboLinux(
     board.Connector,
     board.LinuxBootLogin,
     linux.Bash,
 ):
-    # Username for logging in once linux has booted
     username = ""
-    # Password.  If you don't need a password, set this to `None`
     password = ""
 
-# tbot will check for `BOARD`, don't forget to set it!
-BOARD = ZynqZybo
-UBOOT = ZynqZyboUBoot
-# You need to set `LINUX` now as well.
-LINUX = ZynqZyboLinux
+
+BOARD = Zynq_Zybo
+UBOOT = Zynq_ZyboUBoot
+LINUX = Zynq_ZyboLinux

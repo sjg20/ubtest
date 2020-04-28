@@ -20,10 +20,11 @@ class Rock2(
     Sdwire,
     Ykush,
 ):
-    name = "Rock 2"
+    name = "rock2"
+    desc = "Rock 2"
     console_uart = "/dev/ttyusb_port8"
     raw_device = "/dev/sdcard3"
-    sdwire_serial = "201912160005"
+    sdwire_serial = "sdwireda10"
     ykush_port = "3"
     ykush_serial = "YK17698"
 
@@ -31,7 +32,6 @@ class Rock2(
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
-
         self.sdwire_dut()
         self.ykush_reset()
 
