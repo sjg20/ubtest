@@ -1,24 +1,42 @@
 import tbot
 from tbot.machine import board, channel, connector, linux
+from tbot.tc import git, shell, uboot
+from flash import Flash
+from blobs import Blobs
 from dli import Dli
+
+class MinnowmaxUBootBuilder(uboot.UBootBuilder, Blobs):
+    name = "minnowmax"
+    defconfig = "minnowmax_defconfig"
+    toolchain = "i386"
+    blob_dest = "board/intel/minnowmax"
+    blob_src = "/vid/software/devel/minnowmax/bin/*.bin"
+
+    def do_patch(self, repo: git.GitRepository) -> None:
+        self.add_blobs(repo)
+
 
 class Minnowmax(
     connector.ConsoleConnector,
     board.PowerControl,
     board.Board,
+    Flash,
     Dli,
 ):
+    name = "minnowmax"
+    desc = "Minnowboard Max"
+    console_uart = "/dev/ttyusb_port7"
     dli_hostname = "192.168.4.19"
-    dli_user = "admin"
-    dli_password = "1234"
     dli_outlet = 6
+    dli_password = "1234"
+    dli_user = "admin"
+    em100_chip = "W25Q64DW"
+    em100_serial = "DP139140"
+
+    ether_mac = "None"
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
-
-        # You can access the labhost as `self.host` (if you use the
-        # ConsoleConnector).  In this case I have a simple command to
-        # toggle power.
         self.dli_on()
 
     def poweroff(self) -> None:
@@ -26,27 +44,36 @@ class Minnowmax(
         self.dli_off()
 
     def connect(self, mach) -> channel.Channel:
-        """Connect to the boards serial interface."""
+        """Connect to the board's serial interface."""
+        
+        return mach.open_channel("picocom", "-q", "-b", "115200",
+                                 self.console_uart)
 
-        # `mach.open_channel` 'steals' mach's channel and runs the
-        # given command to connect to the serial console.  Your command
-        # should just connect its tty to the serial console like rlogin,
-        # telnet, picocom or kermit do.  The minicom behavior will not work.
-        return mach.open_channel("picocom", "-b", "115200", "/dev/ttyusb_port7")
+    def flash(self, repo: git.GitRepository) -> None:
+        self.dli_off()
+        
+        self.flash_em100(repo)
+        
 
 
-# Linux machine
-#
-# We use a config which boots directly to Linux without interaction
-# with a bootloader for this example.
+class MinnowmaxUBoot(
+    board.Connector,
+    board.UBootAutobootIntercept,
+    board.UBootShell,
+):
+    prompt = "=> "
+    build = MinnowmaxUBootBuilder()
+
+
 class MinnowmaxLinux(
     board.Connector,
     board.LinuxBootLogin,
     linux.Bash,
 ):
-    pass
+    username = "None"
+    password = "None"
 
-# tbot will check for `BOARD`, don't forget to set it!
+
 BOARD = Minnowmax
-# You need to set `LINUX` now as well.
+UBOOT = MinnowmaxUBoot
 LINUX = MinnowmaxLinux

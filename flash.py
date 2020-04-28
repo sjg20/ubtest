@@ -48,8 +48,8 @@ class Flash:
     def flash_sunxi(self, repo):
         self.wait_for_raw_device()
         host = self.host
-        host.exec0("dd", "if=/dev/zero", "of=%s" % self.raw_device, "bs=1k",
-                   "count=1024")
+        #host.exec0("dd", "if=/dev/zero", "of=%s" % self.raw_device, "bs=1k",
+                   #"count=1024")
         fname = os.path.join(repo._local_str(), "u-boot-sunxi-with-spl.bin")
         host.exec0("dd", "if=%s" % fname, "of=%s" % self.raw_device, "bs=1024",
                    "seek=8")

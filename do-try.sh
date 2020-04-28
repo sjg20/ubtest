@@ -12,4 +12,4 @@ tbot -l kea.py -b ${board}.py -p rev=\"${rev}\" -p clean=True \
 tbot -l kea.py -b ${board}.py -p clean=False -T tbot/contrib \
     uboot_build_and_flash && \
 sleep 2 && \
-tbot -l kea.py -b ${board}.py uboot_boots
+tbot -vv -l kea.py -b ${board}.py uboot_smoke_test
