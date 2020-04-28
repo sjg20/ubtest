@@ -31,7 +31,7 @@ class Samus(
     em100_serial = "DP033694"
     servo_port = 9900
 
-    ether_mac = "None"
+    ether_mac = None
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
@@ -65,8 +65,8 @@ class SamusLinux(
     board.LinuxBootLogin,
     linux.Bash,
 ):
-    username = "None"
-    password = "None"
+    username = "root"
+    password = "test0000"
 
 
 BOARD = Samus

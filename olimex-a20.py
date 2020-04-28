@@ -17,8 +17,8 @@ class Olimex_A20(
     board.PowerControl,
     board.Board,
     Flash,
-    Sdwire,
     Dli,
+    Sdwire,
 ):
     name = "olimex-a20"
     desc = "olimex A20-OLinuXino-MICRO"
@@ -30,7 +30,7 @@ class Olimex_A20(
     raw_device = "/dev/sdcard5"
     sdwire_serial = "sdwireda2"
 
-    ether_mac = "None"
+    ether_mac = None
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
@@ -48,7 +48,6 @@ class Olimex_A20(
                                  self.console_uart)
 
     def flash(self, repo: git.GitRepository) -> None:
-        self.dli_off()
         self.sdwire_ts()
         self.flash_sunxi(repo)
         self.sdwire_dut()
@@ -68,8 +67,8 @@ class Olimex_A20Linux(
     board.LinuxBootLogin,
     linux.Bash,
 ):
-    username = "None"
-    password = "None"
+    username = ""
+    password = ""
 
 
 BOARD = Olimex_A20

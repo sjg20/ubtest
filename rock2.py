@@ -46,7 +46,6 @@ class Rock2(
                                  self.console_uart)
 
     def flash(self, repo: git.GitRepository) -> None:
-        self.ykush_off()
         self.sdwire_ts()
         self.flash_rockchip(repo)
         self.sdwire_dut()
@@ -66,8 +65,8 @@ class Rock2Linux(
     board.LinuxBootLogin,
     linux.Bash,
 ):
-    username = "None"
-    password = "None"
+    username = ""
+    password = ""
 
 
 BOARD = Rock2

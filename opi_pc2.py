@@ -30,7 +30,7 @@ class Opi_Pc2(
     raw_device = "/dev/sdcard6"
     sdwire_serial = "sdwireda3"
 
-    ether_mac = "None"
+    ether_mac = None
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
@@ -48,7 +48,6 @@ class Opi_Pc2(
                                  self.console_uart)
 
     def flash(self, repo: git.GitRepository) -> None:
-        self.dli_off()
         self.sdwire_ts()
         self.flash_sunxi(repo)
         self.sdwire_dut()
@@ -68,8 +67,8 @@ class Opi_Pc2Linux(
     board.LinuxBootLogin,
     linux.Bash,
 ):
-    username = "None"
-    password = "None"
+    username = ""
+    password = ""
 
 
 BOARD = Opi_Pc2

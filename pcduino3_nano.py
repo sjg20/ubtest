@@ -46,7 +46,6 @@ class Pcduino3_Nano(
                                  self.console_uart)
 
     def flash(self, repo: git.GitRepository) -> None:
-        self.ykush_off()
         self.sdwire_ts()
         self.flash_sunxi(repo)
         self.sdwire_dut()
@@ -66,8 +65,8 @@ class Pcduino3_NanoLinux(
     board.LinuxBootLogin,
     linux.Bash,
 ):
-    username = "None"
-    password = "None"
+    username = ""
+    password = ""
 
 
 BOARD = Pcduino3_Nano

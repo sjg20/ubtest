@@ -28,7 +28,7 @@ class Bpi(
     ykush_port = "2"
     ykush_serial = "YK18511"
 
-    ether_mac = "None"
+    ether_mac = None
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
@@ -46,7 +46,6 @@ class Bpi(
                                  self.console_uart)
 
     def flash(self, repo: git.GitRepository) -> None:
-        self.ykush_off()
         self.sdwire_ts()
         self.flash_sunxi(repo)
         self.sdwire_dut()
@@ -66,8 +65,8 @@ class BpiLinux(
     board.LinuxBootLogin,
     linux.Bash,
 ):
-    username = "None"
-    password = "None"
+    username = ""
+    password = ""
 
 
 BOARD = Bpi

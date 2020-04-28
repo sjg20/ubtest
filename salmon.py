@@ -25,11 +25,10 @@ class Salmon(
     usbrelay_recovery = "1"
     usbrelay_reset = "2"
 
-    ether_mac = "None"
+    ether_mac = None
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
-        self.usbrelay_on()
         self.usbrelay_toggle_reset()
 
     def poweroff(self) -> None:
@@ -59,8 +58,8 @@ class SalmonLinux(
     board.LinuxBootLogin,
     linux.Bash,
 ):
-    username = "None"
-    password = "None"
+    username = ""
+    password = ""
 
 
 BOARD = Salmon

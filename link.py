@@ -65,8 +65,8 @@ class LinkLinux(
     board.LinuxBootLogin,
     linux.Bash,
 ):
-    username = "None"
-    password = "None"
+    username = "root"
+    password = "test0000"
 
 
 BOARD = Link
