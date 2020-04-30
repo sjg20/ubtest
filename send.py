@@ -2,6 +2,8 @@ import os
 import re
 import time
 
+import tbot
+from tbot.log import Verbosity
 from tbot.tc import shell
 
 class Send:
@@ -29,10 +31,11 @@ class Send:
         self.host.exec0(*cmd)
 
     def send_sunxi(self, repo):
+        tbot.log.EventIO(None, "Wait for board (%s)" % self.name,
+                         verbosity=Verbosity.QUIET)
         self.wait_for_device(self.sunxi_device)
         cmd = ['readlink', self.sunxi_device]
         out = self.host.exec0(*cmd)
-        print('out', out)
 
         regex = re.compile('bus/usb/(\d{3})/(\d{3})')
         m = regex.search(out)
@@ -41,11 +44,15 @@ class Send:
         bus = m.group(1)
         device = m.group(2)
 
+        tbot.log.EventIO(None, "Send SPL (%s)" % self.name,
+                         verbosity=Verbosity.QUIET)
         args = ['-d', '%s:%s' % (bus, device)]
         spl = os.path.join(repo._local_str(), "spl/sunxi-spl.bin")
         cmd = ['sunxi-fel'] + args + ['spl', spl]
         self.host.exec0(*cmd)
 
+        tbot.log.EventIO(None, "Send U-Boot (%s)" % self.name,
+                         verbosity=Verbosity.QUIET)
         uboot = os.path.join(repo._local_str(), "u-boot.bin")
         cmd = ['sunxi-fel'] + args + ['write', '0x4a000000', uboot]
         self.host.exec0(*cmd)

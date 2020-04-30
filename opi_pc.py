@@ -56,11 +56,6 @@ class Opi_Pc(
         self.sdwire_dut()
 
     def send(self, repo: git.GitRepository) -> None:
-        tbot.log.EventIO(
-            ["board", "on", self.name],
-            tbot.log.c("FEL MODE").bold + f" ({self.name})",
-            verbosity=tbot.log.Verbosity.QUIET,
-        )
         self.sdwire_ts()
         self.dli_reset()
         self.send_sunxi(repo)
