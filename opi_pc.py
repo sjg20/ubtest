@@ -24,16 +24,18 @@ class Opi_Pc(
 ):
     name = "opi_pc"
     desc = "Orange Pi PC"
+    block_device = "/dev/sdcard1"
     console_uart = "/dev/ttyusb_port4"
     dli_hostname = "192.168.4.19"
     dli_outlet = "1"
     dli_password = "1234"
     dli_user = "admin"
-    raw_device = "/dev/sdcard1"
     sdwire_serial = "202001064004"
-    sunxi_device = "/dev/usbdev-opi-pc"
+    send_device = "/dev/usbdev-opi-pc"
+    usbboot_loadaddr = 0x4a000000
+    usbboot_port = "6-2.1.3"
 
-    ether_mac = None
+    ether_mac = "02:81:d5:d8:6c:39"
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
@@ -59,6 +61,7 @@ class Opi_Pc(
         self.sdwire_ts()
         self.dli_reset()
         self.send_sunxi(repo)
+        self.sdwire_dut()
 
 
 class Opi_PcUBoot(

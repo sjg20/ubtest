@@ -24,5 +24,8 @@ class Usbrelay(object):
 
     def usbrelay_toggle_reset(self):
         self.usbrelay_set_reset(True)
-        time.sleep(.25)
+        self.usbrelay_delay()
         self.usbrelay_set_reset(False)
+
+    def usbrelay_delay(self):
+        time.sleep(.25)

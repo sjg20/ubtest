@@ -7,11 +7,13 @@ from tbot.log import Verbosity
 from tbot.tc import shell
 
 class Send:
-    def wait_for_device(self, device):
+    def wait_for_send_device(self):
+        tbot.log.EventIO(None, "Wait for board (%s)" % self.name,
+                         verbosity=Verbosity.QUIET)
         done = False
         for i in range(10):
             try:
-                self.host.exec0("ls", device)
+                self.host.exec0("ls", self.send_device)
                 done = True
                 if done:
                     break
@@ -19,22 +21,23 @@ class Send:
                 pass
             time.sleep(1)
         if not done:
-            raise ValueError("Cannot access device '%s'" % device)
+            raise ValueError("Cannot access device '%s'" % self.send_device)
 
     def send_tegra(self, repo):
-        self.wait_for_device(self.tegra_device)
+        self.wait_for_send_device()
+
+        tbot.log.EventIO(None, "Send U-Boot (%s)" % self.name,
+                         verbosity=Verbosity.QUIET)
         u_boot = os.path.join(repo._local_str(), "u-boot-dtb-tegra.bin")
         cmd = ['tegrarcm', '--bct=' + self.tegra_bct,
                '--bootloader=%s' % u_boot ,
-               '--loadaddr=0x%08x' % self.tegra_loadaddr,
-               '--usb-port-path', self.tegra_port]
+               '--loadaddr=%#08x' % self.usbboot_loadaddr,
+               '--usb-port-path', self.usbboot_port]
         self.host.exec0(*cmd)
 
     def send_sunxi(self, repo):
-        tbot.log.EventIO(None, "Wait for board (%s)" % self.name,
-                         verbosity=Verbosity.QUIET)
-        self.wait_for_device(self.sunxi_device)
-        cmd = ['readlink', self.sunxi_device]
+        self.wait_for_send_device()
+        cmd = ['readlink', self.send_device]
         out = self.host.exec0(*cmd)
 
         regex = re.compile('bus/usb/(\d{3})/(\d{3})')
@@ -54,10 +57,11 @@ class Send:
         tbot.log.EventIO(None, "Send U-Boot (%s)" % self.name,
                          verbosity=Verbosity.QUIET)
         uboot = os.path.join(repo._local_str(), "u-boot.bin")
-        cmd = ['sunxi-fel'] + args + ['write', '0x4a000000', uboot]
+        cmd = ['sunxi-fel'] + args + ['write', '%#x' % self.usbboot_loadaddr,
+                                      uboot]
         self.host.exec0(*cmd)
 
-        cmd = ['sunxi-fel'] + args + ['exe', '0x4a000000']
+        cmd = ['sunxi-fel'] + args + ['exe', '%#x' % self.usbboot_loadaddr]
         self.host.exec0(*cmd)
 
 #/dev/bus/usb/004/047

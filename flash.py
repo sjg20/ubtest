@@ -4,12 +4,12 @@ import time
 from tbot.tc import shell
 
 class Flash:
-    def wait_for_raw_device(self):
+    def wait_for_block_device(self):
         done = False
         for i in range(10):
             try:
-                self.host.exec0("dd", "if=%s" % self.raw_device, "of=/dev/null",
-                                "count=1")
+                self.host.exec0("dd", "if=%s" % self.block_device,
+                                "of=/dev/null", "count=1")
                 done = True
                 if done:
                     break
@@ -17,7 +17,7 @@ class Flash:
                 pass
             time.sleep(1)
         if not done:
-            raise ValueError("Cannot access device '%s'" % self.raw_device)
+            raise ValueError("Cannot access device '%s'" % self.block_device)
 
     def wait_for_mount(self):
         host = self.host
@@ -46,12 +46,12 @@ class Flash:
         self.host.exec0("umount", "UUID=%s" % self.mount_uuid)
 
     def flash_sunxi(self, repo):
-        self.wait_for_raw_device()
+        self.wait_for_block_device()
         host = self.host
         fname = os.path.join(repo._local_str(), "u-boot-sunxi-with-spl.bin")
-        host.exec0("dd", "if=%s" % fname, "of=%s" % self.raw_device, "bs=1024",
-                   "seek=8")
-        host.exec0("sync", self.raw_device)
+        host.exec0("dd", "if=%s" % fname, "of=%s" % self.block_device,
+                   "bs=1024", "seek=8")
+        host.exec0("sync", self.block_device)
 
     def flash_rpi(self, repo):
         host = self.host
@@ -71,7 +71,7 @@ class Flash:
         self.unmount()
 
     def flash_rockchip(self, repo):
-        self.wait_for_raw_device()
+        self.wait_for_block_device()
         host = self.host
         mkimage = os.path.join(repo._local_str(), "tools", "mkimage")
         fname = os.path.join(repo._local_str(), "u-boot-sunxi-with-spl.bin")
@@ -80,8 +80,8 @@ class Flash:
 
         u_boot = os.path.join(repo._local_str(), "u-boot.bin")
         host.exec0("sh", "-c", "cat %s >> %s" % (u_boot, tmp))
-        host.exec0("dd", "if=%s" % tmp, "of=%s" % self.raw_device, "seek=64")
-        host.exec0("sync", self.raw_device)
+        host.exec0("dd", "if=%s" % tmp, "of=%s" % self.block_device, "seek=64")
+        host.exec0("sync", self.block_device)
 
     def flash_em100(self, repo):
         rom_fname = os.path.join(repo._local_str(), "u-boot.rom")
