@@ -5,7 +5,7 @@ import time
 import tbot
 from tbot.machine import board, channel, connector, linux
 from tbot.tc import git, shell, uboot
-from flash import Flash
+from send import Send
 from usbrelay import Usbrelay
 
 class Tk1UBootBuilder(uboot.UBootBuilder):
@@ -17,7 +17,7 @@ class Tk1(
     connector.ConsoleConnector,
     board.PowerControl,
     board.Board,
-    Flash,
+    Send,
     Usbrelay,
 ):
     name = "tk1"
@@ -49,14 +49,14 @@ class Tk1(
         return mach.open_channel("picocom", "-q", "-b", "115200",
                                  self.console_uart)
 
-    def flash(self, repo: git.GitRepository) -> None:
+    def send(self, repo: git.GitRepository) -> None:
         self.usbrelay_set_recovery(True)
         self.usbrelay_set_reset(True)
         time.sleep(.1)
         self.usbrelay_set_reset(False)
         time.sleep(.1)
         self.usbrelay_set_recovery(False)
-        self.flash_tegra(repo)
+        self.send_tegra(repo)
 
 
 class Tk1UBoot(

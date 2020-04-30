@@ -25,3 +25,8 @@ class Dli(object):
     def dli_off(self):
         self.dli_setup()
         self.switch.off(self.dli_outlet)
+
+    def dli_reset(self):
+        self.dli_off()
+        time.sleep(1)
+        self.dli_on()

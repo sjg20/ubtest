@@ -4,6 +4,7 @@ import tbot
 from tbot.machine import board, channel, connector, linux
 from tbot.tc import git, shell, uboot
 from flash import Flash
+from send import Send
 from dli import Dli
 from sdwire import Sdwire
 
@@ -17,6 +18,7 @@ class Opi_Pc(
     board.PowerControl,
     board.Board,
     Flash,
+    Send,
     Dli,
     Sdwire,
 ):
@@ -29,6 +31,7 @@ class Opi_Pc(
     dli_user = "admin"
     raw_device = "/dev/sdcard1"
     sdwire_serial = "202001064004"
+    sunxi_device = "/dev/usbdev-opi-pc"
 
     ether_mac = None
 
@@ -51,6 +54,16 @@ class Opi_Pc(
         self.sdwire_ts()
         self.flash_sunxi(repo)
         self.sdwire_dut()
+
+    def send(self, repo: git.GitRepository) -> None:
+        tbot.log.EventIO(
+            ["board", "on", self.name],
+            tbot.log.c("FEL MODE").bold + f" ({self.name})",
+            verbosity=tbot.log.Verbosity.QUIET,
+        )
+        self.sdwire_ts()
+        self.dli_reset()
+        self.send_sunxi(repo)
 
 
 class Opi_PcUBoot(

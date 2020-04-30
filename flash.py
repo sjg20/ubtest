@@ -4,20 +4,6 @@ import time
 from tbot.tc import shell
 
 class Flash:
-    def wait_for_device(self, device):
-        done = False
-        for i in range(10):
-            try:
-                self.host.exec0("ls", device)
-                done = True
-                if done:
-                    break
-            except Exception as e:
-                pass
-            time.sleep(1)
-        if not done:
-            raise ValueError("Cannot access device '%s'" % device)
-
     def wait_for_raw_device(self):
         done = False
         for i in range(10):
@@ -62,8 +48,6 @@ class Flash:
     def flash_sunxi(self, repo):
         self.wait_for_raw_device()
         host = self.host
-        #host.exec0("dd", "if=/dev/zero", "of=%s" % self.raw_device, "bs=1k",
-                   #"count=1024")
         fname = os.path.join(repo._local_str(), "u-boot-sunxi-with-spl.bin")
         host.exec0("dd", "if=%s" % fname, "of=%s" % self.raw_device, "bs=1024",
                    "seek=8")
@@ -103,14 +87,3 @@ class Flash:
         rom_fname = os.path.join(repo._local_str(), "u-boot.rom")
         self.host.exec0("em100", "-x", self.em100_serial, "-s", "-p", "LOW",
                         "-c", self.em100_chip, "-d", rom_fname, "-r")
-
-    def flash_tegra(self, repo):
-        self.wait_for_device(self.tegra_device)
-        print('ready')
-        #loadaddr = "0x%08x" % loadaddr
-        u_boot = os.path.join(repo._local_str(), "u-boot-dtb-tegra.bin")
-        cmd = ['tegrarcm', '--bct=' + self.tegra_bct,
-               '--bootloader=%s' % u_boot ,
-               '--loadaddr=0x%08x' % self.tegra_loadaddr,
-               '--usb-port-path', self.tegra_port]
-        self.host.exec0(*cmd)
