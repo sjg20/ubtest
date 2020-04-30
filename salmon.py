@@ -4,6 +4,7 @@ import tbot
 from tbot.machine import board, channel, connector, linux
 from tbot.tc import git, shell, uboot
 from flash import Flash
+from send import Send
 from usbrelay import Usbrelay
 
 class SalmonUBootBuilder(uboot.UBootBuilder):
@@ -16,11 +17,15 @@ class Salmon(
     board.PowerControl,
     board.Board,
     Flash,
+    Send,
     Usbrelay,
 ):
     name = "salmon"
     desc = "Snapper MX6"
     console_uart = "/dev/ttyusb_port11"
+    send_device = "/dev/usbdev-snappermx6"
+    usbboot_loadaddr = 0x908000
+    usbboot_port = "1-4.2.3"
     usbrelay_name = "QAAMZ"
     usbrelay_recovery = "1"
     usbrelay_reset = "2"
@@ -42,6 +47,15 @@ class Salmon(
 
     def flash(self, repo: git.GitRepository) -> None:
         self.flash_imx(repo)
+
+    def send(self, repo: git.GitRepository) -> None:
+        self.usbrelay_set_recovery(True)
+        self.usbrelay_set_reset(True)
+        self.usbrelay_delay()
+        self.usbrelay_set_reset(False)
+        self.usbrelay_delay()
+        self.usbrelay_set_recovery(False)
+        self.send_imx(repo)
 
 
 class SalmonUBoot(

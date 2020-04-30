@@ -23,6 +23,18 @@ class Send:
         if not done:
             raise ValueError("Cannot access device '%s'" % self.send_device)
 
+    def find_bus_device(self):
+        cmd = ['readlink', self.send_device]
+        out = self.host.exec0(*cmd)
+
+        regex = re.compile('bus/usb/(\d{3})/(\d{3})')
+        m = regex.search(out)
+        if not m:
+            raise ValueError("Cannot find device USB bus/dev in '%s'" % out)
+        bus = m.group(1)
+        device = m.group(2)
+        return bus, device
+
     def send_tegra(self, repo):
         self.wait_for_send_device()
 
@@ -40,12 +52,7 @@ class Send:
         cmd = ['readlink', self.send_device]
         out = self.host.exec0(*cmd)
 
-        regex = re.compile('bus/usb/(\d{3})/(\d{3})')
-        m = regex.search(out)
-        if not m:
-            raise ValueError("Cannot find device USB bus/dev in '%s'" % out)
-        bus = m.group(1)
-        device = m.group(2)
+        bus, device = self.find_bus_device()
 
         tbot.log.EventIO(None, "Send SPL (%s)" % self.name,
                          verbosity=Verbosity.QUIET)
@@ -64,4 +71,13 @@ class Send:
         cmd = ['sunxi-fel'] + args + ['exe', '%#x' % self.usbboot_loadaddr]
         self.host.exec0(*cmd)
 
-#/dev/bus/usb/004/047
+    def send_imx(self, repo):
+        self.wait_for_send_device()
+        bus, device = self.find_bus_device()
+
+        tbot.log.EventIO(None, "Send SPL (%s)" % self.name,
+                         verbosity=Verbosity.QUIET)
+        args = ['-b', bus, '-D', device]
+        spl = os.path.join(repo._local_str(), "spl/u-boot-spl.bin")
+        cmd = ['imx_usb'] + args + [spl, '-l%#x' % self.usbboot_loadaddr]
+        self.host.exec0(*cmd)
