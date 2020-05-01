@@ -26,3 +26,12 @@ ACTION=="add|bind" \
 , SYMLINK+="usbdev-snappermx6" \
 , MODE="0666"
 
+# imx imxusb0
+ACTION=="add|bind" \
+, SUBSYSTEMS=="usb" \
+, KERNELS=="1-4.2.3" \
+, ATTR{idVendor}=="0525" \
+, ATTR{idProduct}=="b4a4" \
+, SYMLINK+="usbdev-snappermx6-spl" \
+, MODE="0666"
+

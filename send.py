@@ -1,5 +1,6 @@
 import os
 import re
+import tempfile
 import time
 
 import tbot
@@ -73,11 +74,46 @@ class Send:
 
     def send_imx(self, repo):
         self.wait_for_send_device()
+        print('go ahead')
+        with tbot.acquire_local() as lo, \
+              tempfile.TemporaryDirectory() as tmpdir:
+            main = 'imx_usb.conf'
+            rom = 'mx6_usb_rom.conf'
+            spl = 'mx6_usb_sdp_spl.conf'
+            tmp = 'imx_loader_tmp'
+
+            #main_fname = os.path.join(tmpdir, 'imx_usb.conf')
+            main_fname = lo.fsroot / tmpdir / 'imx_usb.conf'
+            with open(main_fname._local_str(), 'w') as fd:
+                print('0x15a2:0x0054, %s, 0x0525:0xb4a4, %s' % (rom, spl),
+                      file=fd)
+
+            rom_fname = lo.fsroot / tmpdir / rom
+            with open(rom_fname._local_str(), 'w') as fd:
+                print('''mx6_qsb
+hid,1024,0x910000,0x10000000,1G,0x00900000,0x40000
+SPL:jump header2
+''', file=fd)
+
+            spl_fname = lo.fsroot / tmpdir / spl
+            with open(spl_fname._local_str(), 'w') as fd:
+                print('''mx6_spl_sdp
+#hid/bulk,[old_header,]max packet size, {ram start, ram size}(repeat valid ram areas\
+)
+#In SPL, we typically load u-boot.img which has a U-boot header...
+hid,uboot_header,1024,0x10000000,1G,0x00907000,0x31000
+%s/u-boot.img:load 0x177fffc0,jump 0x17800000
+''' % repo._local_str(), file=fd)
+
+            self.host.exec0('mkdir', '-p', repo / tmp)
+            shell.copy(main_fname, repo / tmp / main)
+            shell.copy(rom_fname, repo / tmp / rom)
+            shell.copy(spl_fname, repo / tmp / spl)
         bus, device = self.find_bus_device()
 
         tbot.log.EventIO(None, "Send SPL (%s)" % self.name,
                          verbosity=Verbosity.QUIET)
         args = ['-b', bus, '-D', device]
-        spl = os.path.join(repo._local_str(), "spl/u-boot-spl.bin")
-        cmd = ['imx_usb'] + args + [spl, '-l%#x' % self.usbboot_loadaddr]
-        self.host.exec0(*cmd)
+        cmd = ['cd', repo._local_str(), ';', 'imx_usb'] + args
+        cmd += ['-c', tmp]
+        self.host.exec0('bash', '-c', ' '.join(cmd))
