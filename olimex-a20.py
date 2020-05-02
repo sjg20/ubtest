@@ -4,6 +4,7 @@ import tbot
 from tbot.machine import board, channel, connector, linux
 from tbot.tc import git, shell, uboot
 from flash import Flash
+from send import Send
 from dli import Dli
 from sdwire import Sdwire
 
@@ -17,17 +18,18 @@ class Olimex_A20(
     board.PowerControl,
     board.Board,
     Flash,
+    Send,
     Dli,
     Sdwire,
 ):
     name = "olimex-a20"
     desc = "olimex A20-OLinuXino-MICRO"
+    block_device = "/dev/sdcard5"
     console_uart = "/dev/ttyusb_port13"
     dli_hostname = "192.168.4.19"
     dli_outlet = "4"
     dli_password = "1234"
     dli_user = "admin"
-    raw_device = "/dev/sdcard5"
     sdwire_serial = "sdwireda2"
 
     ether_mac = None
@@ -50,6 +52,12 @@ class Olimex_A20(
     def flash(self, repo: git.GitRepository) -> None:
         self.sdwire_ts()
         self.flash_sunxi(repo)
+        self.sdwire_dut()
+
+    def send(self, repo: git.GitRepository) -> None:
+        self.sdwire_ts()
+        self.dli_reset()
+        self.send_None(repo)
         self.sdwire_dut()
 
 

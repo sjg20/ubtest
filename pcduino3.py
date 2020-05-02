@@ -4,7 +4,9 @@ import tbot
 from tbot.machine import board, channel, connector, linux
 from tbot.tc import git, shell, uboot
 from flash import Flash
+from send import Send
 from sdwire import Sdwire
+from usbrelay import Usbrelay
 from ykush import Ykush
 
 class Pcduino3UBootBuilder(uboot.UBootBuilder):
@@ -17,14 +19,21 @@ class Pcduino3(
     board.PowerControl,
     board.Board,
     Flash,
+    Send,
     Sdwire,
+    Usbrelay,
     Ykush,
 ):
     name = "pcduino3"
     desc = "Linksprite pcDuino 3"
+    block_device = "/dev/sdcard0"
     console_uart = "/dev/ttyusb_port2"
-    raw_device = "/dev/sdcard0"
     sdwire_serial = "sdwire-7"
+    send_device = "/dev/usbdev-pcduino3"
+    usbboot_loadaddr = 0x4a000000
+    usbboot_port = "1-5.1.2.2"
+    usbrelay_name = "6QMBS"
+    usbrelay_recovery = "4"
     ykush_port = "2"
     ykush_serial = "YK17698"
 
@@ -51,6 +60,18 @@ class Pcduino3(
     def flash(self, repo: git.GitRepository) -> None:
         self.sdwire_ts()
         self.flash_sunxi(repo)
+        self.sdwire_dut()
+
+    def send(self, repo: git.GitRepository) -> None:
+        self.usbrelay_set_recovery(True)
+        self.ykush_set_power(False)
+        self.ykush_delay()
+        self.usbrelay_delay()
+        self.ykush_set_power(True)
+        self.ykush_delay()
+        self.usbrelay_delay()
+        self.usbrelay_set_recovery(False)
+        self.send_sunxi(repo)
         self.sdwire_dut()
 
 

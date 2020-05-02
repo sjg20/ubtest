@@ -10,5 +10,12 @@ UUID=cecc7600-04da-4939-923e-3b1c40252a75 /               ext4    errors=remount
 /swapfile                                 none            swap    sw              0       0
 live:/share/MD0_DATA/vid      /vid  nfs auto   0 0
 
-UUID=B529-9710		      /media/rpi3_b_boot auto	defaults,noauto,user
-UUID=5203-DB74		      /media/zynq_zybo_boot auto	defaults,noauto,user
+# sdwire sdwire0
+UUID=B529-9710		/media/rpi3_b_boot	auto	defaults,noauto,user
+
+# sdwire sdwire3
+UUID=5203-DB74		/media/zynq_zybo_boot	auto	defaults,noauto,user
+
+# sdwire sdwire12
+UUID=4D32-1997		/media/rpi2_boot	auto	defaults,noauto,user
+

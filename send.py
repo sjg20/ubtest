@@ -74,7 +74,6 @@ class Send:
 
     def send_imx(self, repo):
         self.wait_for_send_device()
-        print('go ahead')
         with tbot.acquire_local() as lo, \
               tempfile.TemporaryDirectory() as tmpdir:
             main = 'imx_usb.conf'

@@ -193,6 +193,9 @@ tbot -l kea.py -b rpi3.py -T tbot/contrib uboot_build_and_flash interactive_boar
 /vid/software/devel/ubtest/do-try-int.sh rpi3 HEAD
 
 
+./tools/labman/labman -l tools/labman/kea_lab.yaml start
+
+
 systemctl daemon-reload
 systemctl stop gitlab-runner
 

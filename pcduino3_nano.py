@@ -4,6 +4,7 @@ import tbot
 from tbot.machine import board, channel, connector, linux
 from tbot.tc import git, shell, uboot
 from flash import Flash
+from send import Send
 from sdwire import Sdwire
 from ykush import Ykush
 
@@ -17,13 +18,14 @@ class Pcduino3_Nano(
     board.PowerControl,
     board.Board,
     Flash,
+    Send,
     Sdwire,
     Ykush,
 ):
     name = "pcduino3_nano"
     desc = "Linksprite pcDuino3 Nano"
+    block_device = "/dev/sdcard4"
     console_uart = "/dev/ttyusb_port12"
-    raw_device = "/dev/sdcard4"
     sdwire_serial = "sdwireda1"
     ykush_port = "1"
     ykush_serial = "YK18511"
@@ -48,6 +50,12 @@ class Pcduino3_Nano(
     def flash(self, repo: git.GitRepository) -> None:
         self.sdwire_ts()
         self.flash_sunxi(repo)
+        self.sdwire_dut()
+
+    def send(self, repo: git.GitRepository) -> None:
+        self.sdwire_ts()
+        self.ykush_reset()
+        self.send_None(repo)
         self.sdwire_dut()
 
 

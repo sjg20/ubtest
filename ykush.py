@@ -8,13 +8,15 @@ class Ykush(object):
         ykush_serial: Serial number of YKUSH device
         ykush_port: Port number on that device
     """
-    def ykush_on(self):
+    def ykush_set_power(self, value):
         self.host.exec0('ykushcmd', '-s', self.ykush_serial,
-                        '-u', self.ykush_port)
+                        '-u' if value else '-d', self.ykush_port)
+
+    def ykush_on(self):
+        self.ykush_set_power(True)
 
     def ykush_off(self):
-        self.host.exec0('ykushcmd', '-s', self.ykush_serial,
-                        '-d', self.ykush_port)
+        self.ykush_set_power(False)
 
     def ykush_is_on(self):
         out = self.host.exec0('ykushcmd', '-s', self.ykush_serial,
@@ -26,3 +28,6 @@ class Ykush(object):
             self.ykush_off()
             time.sleep(1)
         self.ykush_on()
+
+    def ykush_delay(self):
+        time.sleep(.25)
