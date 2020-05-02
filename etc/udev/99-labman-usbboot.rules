@@ -8,7 +8,7 @@ ACTION=="add|bind" \
 , SYMLINK+="usbdev-jetson-tk1" \
 , MODE="0666"
 
-# tegrarcm sunxi-usb0
+# sunxi sunxi-usb0
 ACTION=="add|bind" \
 , SUBSYSTEMS=="usb" \
 , KERNELS=="6-2.1.3" \
@@ -17,13 +17,31 @@ ACTION=="add|bind" \
 , SYMLINK+="usbdev-opi-pc" \
 , MODE="0666"
 
-# tegrarcm sunxi-usb1
+# sunxi sunxi-usb1
 ACTION=="add|bind" \
 , SUBSYSTEMS=="usb" \
 , KERNELS=="1-5.1.2.2" \
 , ATTR{idVendor}=="1f3a" \
 , ATTR{idProduct}=="efe8" \
 , SYMLINK+="usbdev-pcduino3" \
+, MODE="0666"
+
+# sunxi sunxi-usb2
+ACTION=="add|bind" \
+, SUBSYSTEMS=="usb" \
+, KERNELS=="4-10.4.4" \
+, ATTR{idVendor}=="1f3a" \
+, ATTR{idProduct}=="efe8" \
+, SYMLINK+="usbdev-olimex-a20" \
+, MODE="0666"
+
+# sunxi sunxi-usb3
+ACTION=="add|bind" \
+, SUBSYSTEMS=="usb" \
+, KERNELS=="4-10.4.3" \
+, ATTR{idVendor}=="1f3a" \
+, ATTR{idProduct}=="efe8" \
+, SYMLINK+="usbdev-opi_pc2" \
 , MODE="0666"
 
 # imx imxusb0

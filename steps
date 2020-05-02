@@ -167,6 +167,31 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 libmpfr.so.4
 
 
+http://xfstk.sourceforge.net/
+Follow instructions in README:
+ sudo apt-get install g++ qtcreator build-essential devscripts libxml2-dev \
+     alien doxygen graphviz libusb-dev libboost-all-dev
+
+     sudo apt-get install libhidapi-dev libhidapi-hidraw0 git
+
+
+https://github.com/darrylb123/usbrelay.git
+
+(to set the serial number of a relay)
+
+edison recovery
+sudo xfstk-dldr-solo  --gpflags 0x80000007 --osimage /vid/software/devel/edison/recover/u-boot-edison.img --fwdnx /vid/software/devel/edison/recover/edison_dnx_fwr.bin --fwimage /vid/software/devel/edison/recover/edison_ifwi-dbg-00.bin --osdnx /vid/software/devel/edison/recover/edison_dnx_osr.bin
+
+also:
+ sudo apt-get install libqt4-dev
+ mkdir build
+ cd build
+ export DISTRIBUTION_NAME=ubuntu12.04
+ export BUILD_VERSION=0.0.0
+ make -j30
+ sudo make install
+
+
 udevadm info --name=/dev/bus/usb/001/043 --attribute-walk
 udevadm test //devices...
 

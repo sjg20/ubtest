@@ -31,6 +31,9 @@ class Olimex_A20(
     dli_password = "1234"
     dli_user = "admin"
     sdwire_serial = "sdwireda2"
+    send_device = "/dev/usbdev-olimex-a20"
+    usbboot_loadaddr = 0x4a000000
+    usbboot_port = "4-10.4.4"
 
     ether_mac = None
 
@@ -57,7 +60,7 @@ class Olimex_A20(
     def send(self, repo: git.GitRepository) -> None:
         self.sdwire_ts()
         self.dli_reset()
-        self.send_None(repo)
+        self.send_sunxi(repo)
         self.sdwire_dut()
 
 
