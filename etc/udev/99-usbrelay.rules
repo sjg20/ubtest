@@ -1,6 +1,0 @@
-ACTION=="add" \
-, KERNEL=="hidraw*" \
-, SUBSYSTEM=="hidraw" \
-, KERNELS=="4-10.1.2" \
-, SYMLINK+="relay0" \
-, MODE="0666"
