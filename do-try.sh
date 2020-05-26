@@ -1,7 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 
 board=$1
 rev=$(git rev-parse $2)
+
+if [[ -z "$board" ]] || [[ -z "$rev" ]]; then
+	echo "Usage: $0 <board> <commit>"
+	echo
+	echo "<commit> is a branch/commit on ellesmere/u-boot.git"
+	exit 1
+fi
 
 echo "Revision ${rev}, board ${board}"
 cd /vid/software/devel/ubtest

@@ -22,7 +22,7 @@ class Tk1(
 ):
     name = "tk1"
     desc = "Jetson TK1"
-    console_uart = "/dev/ttyusb_port3"
+    console_uart = "192.168.4.23:2001"
     send_device = "/dev/usbdev-jetson-tk1"
     tegra_bct = "/vid/software/devel/tegra/tegra-uboot-flasher-scripts/jetson-tk1/PM375_Hynix_2GB_H5TC4G63AFR_RDA_924MHz.bct"
     usbboot_loadaddr = 0x80108000
@@ -36,8 +36,7 @@ class Tk1(
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
-        #self.usbrelay_toggle_reset()
-        pass
+        self.usbrelay_toggle_reset()
 
     def poweroff(self) -> None:
         """Procedure to turn power off."""
@@ -45,8 +44,10 @@ class Tk1(
 
     def connect(self, mach) -> channel.Channel:
         """Connect to the board's serial interface."""
-        return mach.open_channel("picocom", "-q", "-b", "115200",
-                                 self.console_uart)
+        return mach.open_channel("nc", "192.168.4.23", "2001")
+
+    def flash(self, repo: git.GitRepository) -> None:
+        self.flash_None(repo)
 
     def send(self, repo: git.GitRepository) -> None:
         self.usbrelay_set_recovery(True)

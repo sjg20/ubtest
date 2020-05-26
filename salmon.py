@@ -22,7 +22,7 @@ class Salmon(
 ):
     name = "salmon"
     desc = "Snapper MX6"
-    console_uart = "/dev/ttyusb_port11"
+    console_uart = "192.168.4.23:2002"
     send_device = "/dev/usbdev-snappermx6"
     usbboot_loadaddr = 0x908000
     usbboot_port = "1-4.2.3"
@@ -42,8 +42,7 @@ class Salmon(
 
     def connect(self, mach) -> channel.Channel:
         """Connect to the board's serial interface."""
-        return mach.open_channel("picocom", "-q", "-b", "115200",
-                                 self.console_uart)
+        return mach.open_channel("bash", "-c", "stty raw; nc 192.168.4.23 2002")
 
     def flash(self, repo: git.GitRepository) -> None:
         self.flash_imx(repo)

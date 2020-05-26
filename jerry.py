@@ -4,6 +4,7 @@ import tbot
 from tbot.machine import board, channel, connector, linux
 from tbot.tc import git, shell, uboot
 from flash import Flash
+from send import Send
 from servo import Servo
 
 class JerryUBootBuilder(uboot.UBootBuilder):
@@ -16,11 +17,14 @@ class Jerry(
     board.PowerControl,
     board.Board,
     Flash,
+    Send,
     Servo,
 ):
     name = "jerry"
     desc = "Jerry"
-    servo_port = 9903
+    em100_chip = "GD25LQ32"
+    em100_serial = "DP022783"
+    servo_port = 0x26af
 
     ether_mac = "00:1a:11:30:09:25"
 
@@ -40,6 +44,10 @@ class Jerry(
 
     def flash(self, repo: git.GitRepository) -> None:
         self.flash_em100(repo)
+
+    def send(self, repo: git.GitRepository) -> None:
+        self.servo_reset()
+        self.send_None(repo)
 
 
 class JerryUBoot(

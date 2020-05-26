@@ -6,7 +6,7 @@ ACTION=="add|bind" \
 , ATTR{idProduct}=="1235" \
 , ATTR{idVendor}=="04b4" \
 , MODE="0666" \
-, SYMLINK+="em100_0"
+, SYMLINK+="em100_minnowmax"
 
 # em100 em100-1
 ACTION=="add|bind" \
@@ -14,7 +14,7 @@ ACTION=="add|bind" \
 , ATTR{idProduct}=="1235" \
 , ATTR{idVendor}=="04b4" \
 , MODE="0666" \
-, SYMLINK+="em100_1"
+, SYMLINK+="em100_link"
 
 # em100 em100-2
 ACTION=="add|bind" \
@@ -22,5 +22,5 @@ ACTION=="add|bind" \
 , ATTR{idProduct}=="1235" \
 , ATTR{idVendor}=="04b4" \
 , MODE="0666" \
-, SYMLINK+="em100_2"
+, SYMLINK+="em100_samus"
 

@@ -28,7 +28,7 @@ class Samus(
     name = "samus"
     desc = "Chromebook Pixel 2"
     em100_chip = "W25Q64CV"
-    em100_serial = "DP033694"
+    em100_serial = "DP025143"
     servo_port = 9900
 
     ether_mac = None
