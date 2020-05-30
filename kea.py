@@ -7,7 +7,24 @@ class ArmV7Toolchain(linux.build.Toolchain):
         # Set all environment variables to "enable" this toolchain
         prefix = "~/.buildman-toolchains/gcc-7.3.0-nolibc/arm-linux-gnueabi/bin/arm-linux-gnueabi-"
         host.env("CROSS_COMPILE", prefix)
-        host.env("ARCH", "arm")
+        #host.env("ARCH", "arm")
+
+        for tool in [
+            "gcc", "objdump", "size", "ar", "nm", "strings",
+            "as", "ld", "objcopy", "readelf", "strip",
+        ]:
+            host.env(tool.upper(), prefix + tool)
+
+        # Optionally set CFLAGS and LDFLAGS
+        # host.env("CFLAGS", "...")
+        # host.env("LDFLAGS", "...")
+
+class Aarch64Toolchain(linux.build.Toolchain):
+    def enable(self, host):
+        # Set all environment variables to "enable" this toolchain
+        prefix = "~/.buildman-toolchains/gcc-7.3.0-nolibc/aarch64-linux/bin/aarch64-linux-"
+        host.env("CROSS_COMPILE", prefix)
+        #host.env("ARCH", "arm")
 
         for tool in [
             "gcc", "objdump", "size", "ar", "nm", "strings",
@@ -57,6 +74,7 @@ class KeaLab(
         # example, a toolchain named `armv7-a` is defined.
         return {
             "armv7-a": ArmV7Toolchain(),
+            "aarch64": Aarch64Toolchain(),
             "i386": I386Toolchain(),
         }
 

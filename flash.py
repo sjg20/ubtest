@@ -74,6 +74,7 @@ class Flash:
         self.wait_for_block_device()
         host = self.host
         mkimage = os.path.join(repo._local_str(), "tools", "mkimage")
+        # This is wrong
         fname = os.path.join(repo._local_str(), "u-boot-sunxi-with-spl.bin")
         tmp = os.path.join(repo._local_str(), "out.tmp")
         host.exec0(mkimage, "-n", "rk3288", "-T", "rksd", "-d", fname, tmp)
@@ -83,7 +84,27 @@ class Flash:
         host.exec0("dd", "if=%s" % tmp, "of=%s" % self.block_device, "seek=64")
         host.exec0("sync", self.block_device)
 
+    def flash_rockchip3399_tpl(self, repo):
+        self.wait_for_block_device()
+        host = self.host
+
+        idb = os.path.join(repo._local_str(), "idbloader.img")
+        host.exec0("dd", "if=%s" % idb, "of=%s" % self.block_device, "seek=64")
+        u_boot = os.path.join(repo._local_str(), "u-boot.itb")
+        host.exec0("dd", "if=%s" % u_boot, "of=%s" % self.block_device,
+                   "seek=16384")
+        host.exec0("sync", self.block_device)
+
     def flash_em100(self, repo):
         rom_fname = os.path.join(repo._local_str(), "u-boot.rom")
         self.host.exec0("em100", "-x", self.em100_serial, "-s", "-p", "LOW",
                         "-c", self.em100_chip, "-d", rom_fname, "-r")
+
+    def flash_davinci(self, repo):
+        self.wait_for_block_device()
+        host = self.host
+
+        u_boot = os.path.join(repo._local_str(), "u-boot.ais")
+        host.exec0("dd", "if=%s" % u_boot, "of=%s" % self.block_device,
+                   "seek=117")
+        host.exec0("sync", self.block_device)
