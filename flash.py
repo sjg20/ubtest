@@ -42,6 +42,12 @@ class Flash:
         if not done:
             raise ValueError("Cannot access mount '%s'" % self.mount_uuid)
 
+    def dd_to_block_device(self, fname, seek, bs=512, sync=True):
+        self.host.exec0("dd", "if=%s" % fname, "of=%s" % self.block_device,
+                        "seek=%d" % seek, "bs=%d" % bs)
+        if sync:
+            self.host.exec0("sync", self.block_device)
+
     def unmount(self):
         self.host.exec0("umount", "UUID=%s" % self.mount_uuid)
 
@@ -49,9 +55,7 @@ class Flash:
         self.wait_for_block_device()
         host = self.host
         fname = os.path.join(repo._local_str(), "u-boot-sunxi-with-spl.bin")
-        host.exec0("dd", "if=%s" % fname, "of=%s" % self.block_device,
-                   "bs=1024", "seek=8")
-        host.exec0("sync", self.block_device)
+        self.dd_to_block_device(fname, 8, bs=1024)
 
     def flash_rpi(self, repo):
         host = self.host
@@ -81,19 +85,16 @@ class Flash:
 
         u_boot = os.path.join(repo._local_str(), "u-boot.bin")
         host.exec0("sh", "-c", "cat %s >> %s" % (u_boot, tmp))
-        host.exec0("dd", "if=%s" % tmp, "of=%s" % self.block_device, "seek=64")
-        host.exec0("sync", self.block_device)
+        self.dd_to_block_device(tmp, 64)
 
     def flash_rockchip3399_tpl(self, repo):
         self.wait_for_block_device()
         host = self.host
 
         idb = os.path.join(repo._local_str(), "idbloader.img")
-        host.exec0("dd", "if=%s" % idb, "of=%s" % self.block_device, "seek=64")
+        self.dd_to_block_device(idb, 64, sync=False)
         u_boot = os.path.join(repo._local_str(), "u-boot.itb")
-        host.exec0("dd", "if=%s" % u_boot, "of=%s" % self.block_device,
-                   "seek=16384")
-        host.exec0("sync", self.block_device)
+        self.dd_to_block_device(u_boot, 16384)
 
     def flash_em100(self, repo):
         rom_fname = os.path.join(repo._local_str(), "u-boot.rom")
@@ -105,6 +106,4 @@ class Flash:
         host = self.host
 
         u_boot = os.path.join(repo._local_str(), "u-boot.ais")
-        host.exec0("dd", "if=%s" % u_boot, "of=%s" % self.block_device,
-                   "seek=117")
-        host.exec0("sync", self.block_device)
+        self.dd_to_block_device(u_boot, 117)
