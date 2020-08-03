@@ -2,19 +2,28 @@
 
 set -e
 
-#V=-vv
+lab=kea.py
+V=
+clean=False
+
 usage() {
 	echo Error: $1
 
-	echo "Usage: $0 <board> [<commit>]"
+	echo "Usage: [-cv] $0 <board> [<commit>]"
 	echo
-	echo "<commit> is a branch/commit on ellesmere/u-boot.git"
+	echo "   -c  - clean before building"
+	echo "   -v  - use verbose output"
+	echo
+	echo "<commit> is a branch/commit on the tree used by tbot"
 	echo "If <commit> is empty, the current source is used"
 	exit 1
 }
 
-while getopts "v" opt; do
+while getopts "cv" opt; do
 	case $opt in
+	c )
+	  clean=True
+	  ;;
 	v )
 	  V=-vv
 	  ;;
@@ -34,10 +43,12 @@ commit=$2
 if [[ -z "$commit" ]]; then
 	commit=HEAD
 	patch=/tmp/$$.patch
-	git diff --no-ext-diff >$patch
+	git diff --no-ext-diff HEAD >$patch
 	[[ ! -s $patch ]] && patch=
 	patch="${patch:+"-p patch=\"$patch\""}"
-	echo "Sending patch file with uncommitted changes"
+	if [[ -n "$patch" ]]; then
+		echo "Sending patch file with uncommitted changes"
+	fi
 fi
 
 rev=$(git rev-parse $commit)
@@ -49,8 +60,6 @@ fi
 cd /vid/software/devel/ubtest
 echo
 echo "Checking revision ${rev}"
-# tbot -l kea.py -b ${board}.py -p rev=\"${rev}\" -p clean=True $patch $V \
-#     uboot_checkout
-tbot -l kea.py -b ${board}.py -T tbot/contrib -p rev=\"${rev}\" \
-	-p clean=False $patch $V uboot_build_and_flash
-tbot -l kea.py -b ${board}.py interactive_board
+tbot -l ${lab} -b ${board}.py -T tbot/contrib -p rev=\"${rev}\" \
+	-p clean=${clean} $patch $V uboot_build_and_flash
+tbot -l ${lab} -b ${board}.py interactive_board

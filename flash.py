@@ -77,15 +77,15 @@ class Flash:
     def flash_rockchip(self, repo):
         self.wait_for_block_device()
         host = self.host
-        mkimage = os.path.join(repo._local_str(), "tools", "mkimage")
-        # This is wrong
-        fname = os.path.join(repo._local_str(), "u-boot-sunxi-with-spl.bin")
-        tmp = os.path.join(repo._local_str(), "out.tmp")
-        host.exec0(mkimage, "-n", "rk3288", "-T", "rksd", "-d", fname, tmp)
 
-        u_boot = os.path.join(repo._local_str(), "u-boot.bin")
-        host.exec0("sh", "-c", "cat %s >> %s" % (u_boot, tmp))
-        self.dd_to_block_device(tmp, 64)
+        #fname = os.path.join(repo._local_str(), "spl/u-boot-spl.bin")
+        #tmp = os.path.join(repo._local_str(), "out.tmp")
+        #host.exec0(mkimage, "-n", "rk3288", "-T", "rksd", "-d", fname, tmp)
+        #self.dd_to_block_device(tmp, 64)
+        fname = os.path.join(repo._local_str(), "u-boot-rockchip.bin")
+        self.dd_to_block_device(fname, 64)
+        #fname = os.path.join(repo._local_str(), "u-boot-dtb.img")
+        #self.dd_to_block_device(fname, 16384)
 
     def flash_rockchip3399_tpl(self, repo):
         self.wait_for_block_device()

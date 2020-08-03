@@ -14,6 +14,7 @@ class ArmV7Toolchain(linux.build.Toolchain):
             "as", "ld", "objcopy", "readelf", "strip",
         ]:
             host.env(tool.upper(), prefix + tool)
+        host.env("BUILD_ROM", "1")
 
         # Optionally set CFLAGS and LDFLAGS
         # host.env("CFLAGS", "...")
