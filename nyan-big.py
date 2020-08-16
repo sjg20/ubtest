@@ -24,8 +24,11 @@ class Nyan_Big(
     desc = "Asus Chromebook"
     em100_chip = "W25Q32DW"
     em100_serial = "DP138817"
-    servo_port = 9901
     send_device = "/dev/usbdev-nyan-big"
+    servo_port = 9901
+    tegra_bct = "/vid/software/devel/tegra/cbootimage-configs/tegra124/nvidia/norrin/PM370_Hynix_2GB_H5TC4G63AFR_PBA_924MHz_01212014.bct"
+    usbboot_loadaddr = 0x80108000
+    usbboot_port = "1-3.4.1"
 
     ether_mac = "94:eb:2c:15:84:a3"
 
@@ -46,7 +49,7 @@ class Nyan_Big(
         self.flash_em100(repo)
 
     def send(self, repo: git.GitRepository) -> None:
-        self.servo_reset()
+        self.servo_recovery()
         self.send_tegra(repo)
 
 

@@ -33,6 +33,10 @@ class Servo:
     def servo_reset(self):
         self.dut_control("cold_reset:on", "sleep:.2", "cold_reset:off")
 
+    def servo_recovery(self):
+        self.dut_control("cold_reset:on", "t20_rec:on", "sleep:.2",
+                         "cold_reset:off", "sleep:.5", "t20_rec:off")
+
     def dut_control(self, *args):
         #self.servo_setup()
         return self.host.exec0(DUT_CONTROL, "-p", str(self.servo_port), *args)

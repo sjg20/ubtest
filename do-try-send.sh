@@ -1,6 +1,8 @@
 #!/bin/bash
 
-. get_args.sh
+mydir=$(dirname $(readlink $0))
+
+. ${mydir}/get_args.sh
 
 tbot -l kea.py -b ${board}.py -p rev=\"${rev}\" -p clean=${clean} \
     uboot_checkout && \
