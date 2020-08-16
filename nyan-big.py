@@ -4,11 +4,12 @@ import tbot
 from tbot.machine import board, channel, connector, linux
 from tbot.tc import git, shell, uboot
 from flash import Flash
+from send import Send
 from servo import Servo
 
 class Nyan_BigUBootBuilder(uboot.UBootBuilder):
     name = "nyan-big"
-    defconfig = "nyan_big_defconfig"
+    defconfig = "nyan-big_defconfig"
     toolchain = "armv7-a"
 
 class Nyan_Big(
@@ -16,11 +17,15 @@ class Nyan_Big(
     board.PowerControl,
     board.Board,
     Flash,
+    Send,
     Servo,
 ):
     name = "nyan-big"
     desc = "Asus Chromebook"
+    em100_chip = "W25Q32DW"
+    em100_serial = "DP138817"
     servo_port = 9901
+    send_device = "/dev/usbdev-nyan-big"
 
     ether_mac = "94:eb:2c:15:84:a3"
 
@@ -35,11 +40,14 @@ class Nyan_Big(
     def connect(self, mach) -> channel.Channel:
         """Connect to the board's serial interface."""
         self.console_uart = self.servo_get_tty()
-        return mach.open_channel("picocom", "-q", "-b", "115200",
-                                 self.console_uart)
+        return mach.open_channel("picocom", "-q", "-b", "115200", self.console_uart)
 
     def flash(self, repo: git.GitRepository) -> None:
         self.flash_em100(repo)
+
+    def send(self, repo: git.GitRepository) -> None:
+        self.servo_reset()
+        self.send_tegra(repo)
 
 
 class Nyan_BigUBoot(

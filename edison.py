@@ -6,6 +6,7 @@ from tbot.tc import git, shell, uboot
 from flash import Flash
 from send import Send
 from dli import Dli
+from usbrelay import Usbrelay
 
 class EdisonUBootBuilder(uboot.UBootBuilder):
     name = "edison"
@@ -19,6 +20,7 @@ class Edison(
     Flash,
     Send,
     Dli,
+    Usbrelay,
 ):
     name = "edison"
     desc = "Intel Edison"
@@ -27,12 +29,19 @@ class Edison(
     dli_outlet = "5"
     dli_password = "1234"
     dli_user = "admin"
+    send_device = "/dev/usbdev-edison"
+    usbboot_loadaddr = None
+    usbboot_port = "4-10.1.3.1"
+    usbrelay_name = "7QMBS"
+    usbrelay_recovery = "6"
+    usbrelay_reset = "5"
 
     ether_mac = None
 
     def poweron(self) -> None:
         """Procedure to turn power on."""
         self.dli_reset()
+        self.usbrelay_toggle_reset()
 
     def poweroff(self) -> None:
         """Procedure to turn power off."""
@@ -50,7 +59,7 @@ class Edison(
 
     def send(self, repo: git.GitRepository) -> None:
         self.dli_reset()
-        self.send_None(repo)
+        self.send_edison(repo)
 
 
 class EdisonUBoot(

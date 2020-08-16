@@ -202,6 +202,12 @@ udevadm info --name=/dev/ttyUSB0 --attribute-walk
 udevadm test -a -p $(udevadm info -q path /dev/ttyUSB1)
 
 
+Set relay serial
+================
+
+usbrelay 6QMBS=8QMBS
+
+
 How to run
 ==========
 
@@ -249,6 +255,8 @@ test/py/test.py -B zynq_zybo --id sjg-zynq_zybo --build-dir ../current/zynq_zybo
 PATH=$PATH:tools/buildman ARCH=`buildman -a minnowmax` CROSS_COMPILE=`buildman -A minnowmax` \
 test/py/test.py -B minnowmax --id sjg-minnowmax --build-dir ../current/minnowmax -k help --build
 
+PATH=$PATH:tools/buildman CROSS_COMPILE=`buildman -A rock2` \
+test/py/test.py -B rock2 --id sjg-rock2 --build-dir ../current/rock2 -k help --build
 
 labman  -l tools/labman/kea_lab.yaml -r kea check
 labman -1 -D -l tools/labman/kea_lab.yaml emit -o /vid/software/devel/ubtest/lab_out
