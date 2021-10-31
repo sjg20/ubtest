@@ -42,9 +42,12 @@ class Flash:
         if not done:
             raise ValueError("Cannot access mount '%s'" % self.mount_uuid)
 
-    def dd_to_block_device(self, fname, seek, bs=512, sync=True):
-        self.host.exec0("dd", "if=%s" % fname, "of=%s" % self.block_device,
-                        "seek=%d" % seek, "bs=%d" % bs)
+    def dd_to_block_device(self, fname, seek, bs=512, sync=True, count=None):
+        args = ["dd", "if=%s" % fname, "of=%s" % self.block_device,
+                "seek=%d" % seek, "bs=%d" % bs]
+        if count:
+            args.append('count=%d' % count)
+        self.host.exec0(*args)
         if sync:
             self.host.exec0("sync", self.block_device)
 
@@ -65,6 +68,7 @@ class Flash:
 
     def flash_sunxi(self, repo):
         self.wait_for_block_device()
+        self.dd_to_block_device('/dev/zero', 0, bs=1024, count=1024)
         host = self.host
         fname = os.path.join(repo._local_str(), "u-boot-sunxi-with-spl.bin")
         self.dd_to_block_device(fname, 8, bs=1024)
