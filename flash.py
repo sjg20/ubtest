@@ -49,7 +49,19 @@ class Flash:
             self.host.exec0("sync", self.block_device)
 
     def unmount(self):
-        self.host.exec0("umount", "UUID=%s" % self.mount_uuid)
+        host = self.host
+        done = False
+        for i in range(5):
+            try:
+                retcode, out = host.exec("umount", "UUID=%s" % self.mount_uuid)
+                done = retcode == 0
+                if done:
+                    break
+            except Exception as e:
+                pass
+            time.sleep(1)
+        if not done:
+            raise ValueError("Cannot unmount '%s'" % self.mount_uuid)
 
     def flash_sunxi(self, repo):
         self.wait_for_block_device()
