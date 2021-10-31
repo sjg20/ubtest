@@ -133,5 +133,23 @@ ACTION=="add|bind" \
 , ATTR{idVendor}=="04e8" \
 , ATTR{serial}=="sdwireda7" \
 , MODE="0666" \
-, SYMLINK+="sdwire13"
+, SYMLINK+="sdwire14"
+
+# sdwire sdwire15
+ACTION=="add|bind" \
+, SUBSYSTEM=="usb" \
+, ATTR{idProduct}=="6001" \
+, ATTR{idVendor}=="04e8" \
+, ATTR{serial}=="da61" \
+, MODE="0666" \
+, SYMLINK+="sdwire15"
+
+# sdwire sdwire16
+ACTION=="add|bind" \
+, SUBSYSTEM=="usb" \
+, ATTR{idProduct}=="6001" \
+, ATTR{idVendor}=="04e8" \
+, ATTR{serial}=="da62" \
+, MODE="0666" \
+, SYMLINK+="sdwire16"
 
