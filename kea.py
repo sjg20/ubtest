@@ -5,7 +5,7 @@ from tbot.machine import connector, linux
 class ArmV7Toolchain(linux.build.Toolchain):
     def enable(self, host):
         # Set all environment variables to "enable" this toolchain
-        prefix = "~/.buildman-toolchains/gcc-7.3.0-nolibc/arm-linux-gnueabi/bin/arm-linux-gnueabi-"
+        prefix = "/home/sglass/.buildman-toolchains/gcc-7.3.0-nolibc/arm-linux-gnueabi/bin/arm-linux-gnueabi-"
         host.env("CROSS_COMPILE", prefix)
         #host.env("ARCH", "arm")
 
@@ -23,7 +23,7 @@ class ArmV7Toolchain(linux.build.Toolchain):
 class Aarch64Toolchain(linux.build.Toolchain):
     def enable(self, host):
         # Set all environment variables to "enable" this toolchain
-        prefix = "~/.buildman-toolchains/gcc-7.3.0-nolibc/aarch64-linux/bin/aarch64-linux-"
+        prefix = "/home/sglass/.buildman-toolchains/gcc-7.3.0-nolibc/aarch64-linux/bin/aarch64-linux-"
         host.env("CROSS_COMPILE", prefix)
         #host.env("ARCH", "arm")
 
@@ -41,7 +41,7 @@ class Aarch64Toolchain(linux.build.Toolchain):
 class I386Toolchain(linux.build.Toolchain):
     def enable(self, host):
         # Set all environment variables to "enable" this toolchain
-        prefix = "~/.buildman-toolchains/gcc-7.3.0-nolibc/i386-linux/bin/i386-linux-"
+        prefix = "/home/sglass/.buildman-toolchains/gcc-7.3.0-nolibc/i386-linux/bin/i386-linux-"
         host.env("CROSS_COMPILE", prefix)
 
         for tool in [

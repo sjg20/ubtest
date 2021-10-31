@@ -11,7 +11,7 @@ from usbrelay import Usbrelay
 class PumaUBootBuilder(uboot.UBootBuilder):
     name = "puma"
     defconfig = "puma-rk3399_defconfig"
-    toolchain = "armv7-a"
+    toolchain = "aarch64"
 
 class Puma(
     connector.ConsoleConnector,
@@ -49,8 +49,7 @@ class Puma(
 
     def connect(self, mach) -> channel.Channel:
         """Connect to the board's serial interface."""
-        return mach.open_channel("picocom", "-q", "-b", "115200",
-                                 self.console_uart)
+        return mach.open_channel("picocom", "-q", "-b", "115200", self.console_uart)
 
     def flash(self, repo: git.GitRepository) -> None:
         self.sdwire_ts()
