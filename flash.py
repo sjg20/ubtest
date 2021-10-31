@@ -90,6 +90,17 @@ class Flash:
                                   self.mount_point))
         self.unmount()
 
+    def flash_bbb(self, repo):
+        host = self.host
+        self.wait_for_mount()
+
+        # Copy U-Boot over from the build directory
+        shell.copy(repo / "u-boot.bin",
+                   host.fsroot / ("/media/%s/u-boot.img" % self.mount_point))
+        shell.copy(repo / "MLO",
+                   host.fsroot / ("/media/%s/MLO" % self.mount_point))
+        self.unmount()
+
     def flash_rockchip(self, repo):
         self.wait_for_block_device()
         host = self.host
