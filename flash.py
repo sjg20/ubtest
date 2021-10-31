@@ -134,3 +134,31 @@ class Flash:
 
         u_boot = os.path.join(repo._local_str(), "u-boot.ais")
         self.dd_to_block_device(u_boot, 117)
+
+    def wait_for_dfu(self, expect):
+        done = False
+        for i in range(10):
+            try:
+                self.host.exec0("bash", "-c", "lsusb |grep %s" % expect)
+                done = True
+                if done:
+                    break
+            except Exception as e:
+                pass
+            time.sleep(1)
+        if not done:
+            raise ValueError("Cannot find USB device %s" % expect)
+
+    def flash_edison(self, repo):
+        vid = 0x8086
+        pid = 0xe005
+        expect = "%04x:%04x" % (vid, pid)
+        self.wait_for_dfu(expect)
+        u_boot = os.path.join(repo._local_str(), "u-boot-edison.img")
+        bindir = self.usbboot_xfstk_dir
+        self.host.exec0(
+            "xfstk-dldr-solo", "--gpflags", "0x80000007",
+            "--osimage", u_boot,
+            "--fwdnx", os.path.join(bindir, "edison_dnx_fwr.bin"),
+            "--fwimage", os.path.join(bindir, "edison_ifwi-dbg-00.bin"),
+            "--osdnx", os.path.join(bindir, "edison_dnx_osr.bin"))
