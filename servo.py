@@ -34,8 +34,12 @@ class Servo:
         self.dut_control("cold_reset:on", "sleep:.2", "cold_reset:off")
 
     def servo_recovery(self):
-        self.dut_control("cold_reset:on", "t20_rec:on", "sleep:.2",
-                         "cold_reset:off", "sleep:.5", "t20_rec:off")
+        #self.dut_control("cold_reset:on", "t20_rec:on", "sleep:.2",
+                         #"cold_reset:off", "sleep:.5", "t20_rec:off")
+        self.dut_control("cold_reset:on", "sleep:.5",
+                         "cold_reset:off", "sleep:.5")
+        self.dut_control("warm_reset:on", "t20_rec:on", "sleep:.2",
+                         "warm_reset:off", "sleep:.5", "t20_rec:off")
 
     def dut_control(self, *args):
         #self.servo_setup()
