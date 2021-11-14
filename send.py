@@ -116,3 +116,32 @@ hid,uboot_header,1024,0x10000000,1G,0x00907000,0x31000
         cmd = ['cd', repo._local_str(), ';', 'imx_usb'] + args
         cmd += ['-c', tmp]
         self.host.exec0('bash', '-c', ' '.join(cmd))
+
+    def samsung_usbdl(self, addr, fname):
+        bus, device = self.find_bus_device()
+        cmd = ["smdk-usbdl", "-a", '%x' % addr, '-b', bus, '-d', device,
+               '-f', fname]
+        self.host.exec0(*cmd)
+
+    def send_samsung(self, repo):
+        self.wait_for_send_device()
+        time.sleep(0.5)
+        self.samsung_usbdl(self.usbboot_loadaddr,
+                      '/vid/software/devel/exynos/snow/u-boot.bl1.bin')
+
+        # CONFIG_SPL_TEXT_BASE 0x02023400
+        spl_text_base = 0x02023400
+        spl = os.path.join(repo._local_str(), "spl/u-boot-spl.bin")
+        self.samsung_usbdl(spl_text_base, spl)
+
+        # CONFIG_SYS_TEXT_BASE 0x43E00000
+        spl_text_base = 0x43e00000
+        spl = os.path.join(repo._local_str(), "u-boot.bin")
+        self.samsung_usbdl(spl_text_base, spl)
+
+    def send_rockchip(self, repo):
+        """Send to Rockchip SoC over USB
+
+        http://opensource.rock-chips.com/wiki_Rockusb
+        """
+        self.wait_for_send_device()
