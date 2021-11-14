@@ -274,6 +274,7 @@ on kea:
 cd /vid/software/devel/ubtest
 meld lab_out/udev etc/udev/
 meld lab_out/etc/fstab etc/fstab
+meld lab_out/tbot .
 
 on kea:
 sudo ./cp_to_udev.sh
@@ -338,3 +339,25 @@ do-try-send.sh pcduino3
 (pcduino is on the left)
 
 running tests
+
+
+
+Cable problems
+--------------
+
+31/10/21
+
+SDwire sdwireda7 failing dd
+dd if=/home/sglass/tbot-workdir/uboot-ff3399/u-boot-rockchip.bin of=/dev/sdcard10 seek=64
+│   │   │    ## dd: writing to '/dev/sdcard10': Input/output error
+
+tried a different one da63, same problem
+
+This was on hube_6 where the indicator light does not work
+
+changed to a different hub, worked sort-of OK
+
+switched to a fatter cable, worked find
+
+put back to old port, still works
+bad cable is mopower
