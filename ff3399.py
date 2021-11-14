@@ -54,7 +54,7 @@ class Ff3399(
 
     def flash(self, repo: git.GitRepository) -> None:
         self.sdwire_ts()
-        self.flash_rockchip3399_tpl(repo)
+        self.flash_rockchip(repo)
         self.sdwire_dut()
 
     def send(self, repo: git.GitRepository) -> None:

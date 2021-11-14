@@ -42,14 +42,19 @@ class Flash:
         if not done:
             raise ValueError("Cannot access mount '%s'" % self.mount_uuid)
 
-    def dd_to_block_device(self, fname, seek, bs=512, sync=True, count=None):
+    def dd_to_block_device(self, fname, seek, bs=None, sync=True, count=None):
         args = ["dd", "if=%s" % fname, "of=%s" % self.block_device,
-                "seek=%d" % seek, "bs=%d" % bs]
+                "seek=%d" % seek]
+        if bs and bs != 512:
+            args.append("bs=%d" % bs)
         if count:
             args.append('count=%d' % count)
         self.host.exec0(*args)
         if sync:
             self.host.exec0("sync", self.block_device)
+
+    def dd_erase_partition(self):
+        self.dd_to_block_device('/dev/zero', 0, bs=1024 * 1024, count=1)
 
     def unmount(self):
         host = self.host
@@ -68,10 +73,10 @@ class Flash:
 
     def flash_sunxi(self, repo):
         self.wait_for_block_device()
-        self.dd_to_block_device('/dev/zero', 0, bs=1024, count=1024)
+        self.dd_erase_partition()
         host = self.host
         fname = os.path.join(repo._local_str(), "u-boot-sunxi-with-spl.bin")
-        self.dd_to_block_device(fname, 8, bs=1024)
+        self.dd_to_block_device(fname, 1, bs=8192)
 
     def flash_rpi(self, repo):
         host = self.host
@@ -109,19 +114,11 @@ class Flash:
         #tmp = os.path.join(repo._local_str(), "out.tmp")
         #host.exec0(mkimage, "-n", "rk3288", "-T", "rksd", "-d", fname, tmp)
         #self.dd_to_block_device(tmp, 64)
+        self.dd_erase_partition()
         fname = os.path.join(repo._local_str(), "u-boot-rockchip.bin")
         self.dd_to_block_device(fname, 64)
         #fname = os.path.join(repo._local_str(), "u-boot-dtb.img")
         #self.dd_to_block_device(fname, 16384)
-
-    def flash_rockchip3399_tpl(self, repo):
-        self.wait_for_block_device()
-        host = self.host
-
-        idb = os.path.join(repo._local_str(), "idbloader.img")
-        self.dd_to_block_device(idb, 64, sync=False)
-        u_boot = os.path.join(repo._local_str(), "u-boot.itb")
-        self.dd_to_block_device(u_boot, 16384)
 
     def flash_em100(self, repo):
         rom_fname = os.path.join(repo._local_str(), "u-boot.rom")
@@ -133,7 +130,7 @@ class Flash:
         host = self.host
 
         u_boot = os.path.join(repo._local_str(), "u-boot.ais")
-        self.dd_to_block_device(u_boot, 117)
+        self.dd_to_block_device(u_boot, 117, 512)
 
     def wait_for_dfu(self, expect):
         done = False
