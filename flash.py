@@ -42,13 +42,16 @@ class Flash:
         if not done:
             raise ValueError("Cannot access mount '%s'" % self.mount_uuid)
 
-    def dd_to_block_device(self, fname, seek, bs=None, sync=True, count=None):
+    def dd_to_block_device(self, fname, seek, bs=None, sync=True, count=None,
+                           conv=None):
         args = ["dd", "if=%s" % fname, "of=%s" % self.block_device,
                 "seek=%d" % seek]
         if bs and bs != 512:
             args.append("bs=%d" % bs)
         if count:
             args.append('count=%d' % count)
+        if conv:
+            args.append('conv=%s' % conv)
         self.host.exec0(*args)
         if sync:
             self.host.exec0("sync", self.block_device)
@@ -78,22 +81,35 @@ class Flash:
         fname = os.path.join(repo._local_str(), "u-boot-sunxi-with-spl.bin")
         self.dd_to_block_device(fname, 1, bs=8192)
 
-    def flash_rpi(self, repo):
+    def flash_rpi_n(self, repo, name='rpi3', do_gpu_freq=True):
         host = self.host
         self.wait_for_mount()
 
         # Enable the UART and fix the GPU frequency so it works correctly
         config = "/media/%s/config.txt" % self.mount_point
-        host.exec0("sed", "-i", "/enable_uart/c\enable_uart = 1", config)
-        retcode, _ = host.exec("grep", "-q", "^gpu_freq=250", config)
-        if retcode:
-            host.exec0("bash", "-c", "echo gpu_freq=250 >>%s" % config)
+        if do_gpu_freq:
+            host.exec0("sed", "-i", "/enable_uart/c\enable_uart=1", config)
+            retcode, _ = host.exec("grep", "-q", "^gpu_freq=250", config)
+            if do_gpu_freq:
+                host.exec0("bash", "-c", "echo gpu_freq=250 >>%s" % config)
 
         # Copy U-Boot over from the build directory
-        shell.copy(repo / "u-boot.bin",
-                   host.fsroot / ("/media/%s/rpi3-u-boot.bin" %
-                                  self.mount_point))
+        if name == 'rpi0':
+            dest = host.fsroot / ("/media/%s/kernel.img" % self.mount_point)
+        else:
+            dest = host.fsroot / ("/media/%s/%s-u-boot.bin" %
+                                  (self.mount_point, name))
+        shell.copy(repo / "u-boot.bin", dest)
         self.unmount()
+
+    def flash_rpi(self, repo):
+        self.flash_rpi_n(repo)
+
+    def flash_rpi0(self, repo):
+        self.flash_rpi_n(repo, 'rpi0')
+
+    def flash_rpi4(self, repo):
+        self.flash_rpi_n(repo, 'rpi4', False)
 
     def flash_bbb(self, repo):
         host = self.host
@@ -159,3 +175,10 @@ class Flash:
             "--fwdnx", os.path.join(bindir, "edison_dnx_fwr.bin"),
             "--fwimage", os.path.join(bindir, "edison_ifwi-dbg-00.bin"),
             "--osdnx", os.path.join(bindir, "edison_dnx_osr.bin"))
+
+    def flash_amlogic(self, repo):
+        self.wait_for_block_device()
+        self.dd_erase_partition()
+        host = self.host
+        fname = os.path.join(repo._local_str(), "image.bin")
+        self.dd_to_block_device(fname, 0, conv='fsync,notrunc')

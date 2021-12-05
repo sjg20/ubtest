@@ -168,3 +168,27 @@ ACTION=="add|bind" \
 , MODE="0666" \
 , SYMLINK+="ttyusb_port22"
 
+# uart usbport23
+ACTION=="add|bind" \
+, KERNEL=="ttyUSB*" \
+, SUBSYSTEM=="tty" \
+, KERNELS=="1-2.2.3" \
+, MODE="0666" \
+, SYMLINK+="ttyusb_port23"
+
+# uart usbport24
+ACTION=="add|bind" \
+, KERNEL=="ttyUSB*" \
+, SUBSYSTEM=="tty" \
+, KERNELS=="1-2.3.1" \
+, MODE="0666" \
+, SYMLINK+="ttyusb_port24"
+
+# uart usbport25
+ACTION=="add|bind" \
+, KERNEL=="ttyUSB*" \
+, SUBSYSTEM=="tty" \
+, KERNELS=="1-2.3.4" \
+, MODE="0666" \
+, SYMLINK+="ttyusb_port25"
+

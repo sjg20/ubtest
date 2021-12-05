@@ -30,3 +30,9 @@ UUID=B7F8-3D1C		/media/rpi3z_b_boot	auto	defaults,noauto,user
 # sdwire sdwire16
 UUID=CC94-AA32		/media/bbb_boot	auto	defaults,noauto,user
 
+# sdwire sdwire19
+UUID=6B58-81F8		/media/rpi4_boot	auto	defaults,noauto,user
+
+# sdwire sdwire20
+UUID=C839-E506		/media/rpi0_b_boot	auto	defaults,noauto,user
+

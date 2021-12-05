@@ -11,7 +11,7 @@ from usbrelay import Usbrelay
 
 class Pine64UBootBuilder(uboot.UBootBuilder, Blobs):
     name = "pine64"
-    defconfig = "pine64-lts_defconfig"
+    defconfig = "pine64_plus_defconfig"
     toolchain = "aarch64"
     blob_dest = "."
     blob_src = "/vid/software/devel/pine/bl31.bin"

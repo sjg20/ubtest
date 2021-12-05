@@ -162,3 +162,30 @@ ACTION=="add|bind" \
 , MODE="0666" \
 , SYMLINK+="sdwire17"
 
+# sdwire sdwire18
+ACTION=="add|bind" \
+, SUBSYSTEM=="usb" \
+, ATTR{idProduct}=="6001" \
+, ATTR{idVendor}=="04e8" \
+, ATTR{serial}=="da64" \
+, MODE="0666" \
+, SYMLINK+="sdwire18"
+
+# sdwire sdwire19
+ACTION=="add|bind" \
+, SUBSYSTEM=="usb" \
+, ATTR{idProduct}=="6001" \
+, ATTR{idVendor}=="04e8" \
+, ATTR{serial}=="da65" \
+, MODE="0666" \
+, SYMLINK+="sdwire18"
+
+# sdwire sdwire20
+ACTION=="add|bind" \
+, SUBSYSTEM=="usb" \
+, ATTR{idProduct}=="6001" \
+, ATTR{idVendor}=="04e8" \
+, ATTR{serial}=="da66" \
+, MODE="0666" \
+, SYMLINK+="sdwire20"
+
