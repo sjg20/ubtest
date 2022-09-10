@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import re
 import tempfile
 import time
@@ -145,3 +146,25 @@ hid,uboot_header,1024,0x10000000,1G,0x00907000,0x31000
         http://opensource.rock-chips.com/wiki_Rockusb
         """
         self.wait_for_send_device()
+
+    def send_at91(self, repo):
+        self.wait_for_send_device()
+        fname = os.path.join(repo._local_str(), "u-boot.bin")
+        main = 'send.conf'
+        tmp = Path('at91_tmp')
+        with tbot.acquire_local() as lo, \
+             tempfile.TemporaryDirectory() as tmpdir:
+            script = lo.fsroot / tmpdir / main
+            #addr = 0x21f00000
+            #addr = 0x20000000
+            with open(script._local_str(), 'w') as outf:
+                print('''open sn9260
+write_file %#x %s
+go %#x''' % (usbboot_loadaddr, fname, usbboot_loadaddr), file=outf)
+            #cmd = ['cd', repo._local_str(), ';', 'samba-script', script]
+            self.host.exec0('mkdir', '-p', repo / tmp)
+            shell.copy(script, repo / tmp / main)
+            self.host.exec0('sudo', 'rmmod', 'cdc_acm')
+            cmd = ['samba-script', (repo / tmp / main)._local_str()]
+            #self.host.exec0('bash', '-c', ' '.join(cmd))
+            self.host.exec0(*cmd)
