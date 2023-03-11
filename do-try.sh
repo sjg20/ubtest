@@ -2,6 +2,7 @@
 
 board=$1
 rev=$(git rev-parse $2)
+commit=$3
 
 if [[ -z "$board" ]] || [[ -z "$rev" ]]; then
 	echo "Usage: $0 <board> <commit>"

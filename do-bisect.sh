@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# usage
+#
+# do-bisect.sh <board> [<commit>]
+#
+# board: name of board to build and test
+# commit: optional commit to cherry pick on each one
+
 board=$1
 
 if [[ -z "$board" ]]; then
@@ -9,4 +16,4 @@ if [[ -z "$board" ]]; then
 	exit 1
 fi
 
-git bisect run /vid/software/devel/ubtest/do-try.sh ${board} HEAD
+git bisect run /vid/software/devel/ubtest/do-try.sh ${board} HEAD $2
