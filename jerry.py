@@ -44,6 +44,7 @@ class Jerry(
 
     def flash(self, repo: git.GitRepository) -> None:
         self.flash_em100(repo)
+        self.servo_reset()
 
     def send(self, repo: git.GitRepository) -> None:
         self.servo_reset()

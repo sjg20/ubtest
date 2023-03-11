@@ -23,11 +23,11 @@ class Sn9260(
     name = "sn9260"
     desc = "Snapper 9260"
     console_uart = "192.168.4.23:2003"
-    send_device = "/dev/usbdev-snappermx6"
-    usbboot_loadaddr = 0x908000
-    usbboot_port = "1-4.2.3"
-    usbrelay_name = "QAAMZ"
-    usbrelay_recovery = "1"
+    send_device = "/dev/usbdev-sn9260"
+    usbboot_loadaddr = 0x21f00000
+    usbboot_port = "1-3.1.1"
+    usbrelay_name = "7QMBS"
+    usbrelay_recovery = "3"
     usbrelay_reset = "2"
 
     ether_mac = None
@@ -45,7 +45,7 @@ class Sn9260(
         return mach.open_channel("bash", "-c", "stty raw; nc 192.168.4.23 2003")
 
     def flash(self, repo: git.GitRepository) -> None:
-        self.flash_imx(repo)
+        self.flash_at91(repo)
 
     def send(self, repo: git.GitRepository) -> None:
         self.usbrelay_set_recovery(True)
@@ -54,7 +54,7 @@ class Sn9260(
         self.usbrelay_set_reset(False)
         self.usbrelay_delay()
         self.usbrelay_set_recovery(False)
-        self.send_imx(repo)
+        self.send_at91(repo)
 
 
 class Sn9260UBoot(

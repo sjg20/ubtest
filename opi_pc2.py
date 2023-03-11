@@ -11,7 +11,7 @@ from sdwire import Sdwire
 class Opi_Pc2UBootBuilder(uboot.UBootBuilder):
     name = "opi_pc2"
     defconfig = "orangepi_pc2_defconfig"
-    toolchain = "armv7-a"
+    toolchain = "aarch64"
 
 class Opi_Pc2(
     connector.ConsoleConnector,
