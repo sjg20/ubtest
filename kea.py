@@ -41,7 +41,8 @@ class Aarch64Toolchain(linux.build.Toolchain):
 class I386Toolchain(linux.build.Toolchain):
     def enable(self, host):
         # Set all environment variables to "enable" this toolchain
-        prefix = "/home/sglass/.buildman-toolchains/gcc-7.3.0-nolibc/i386-linux/bin/i386-linux-"
+        #prefix = "/home/sglass/.buildman-toolchains/gcc-7.3.0-nolibc/i386-linux/bin/i386-linux-"
+        prefix = "/home/sglass/.buildman-toolchains/gcc-12.2.0-nolibc/i386-linux/bin/i386-linux-"
         host.env("CROSS_COMPILE", prefix)
 
         for tool in [
