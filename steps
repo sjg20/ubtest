@@ -38,7 +38,7 @@ Add 'live' to /etc/hosts
 echo "public:x:1505:sglass" >>/etc/group
 
 # tbot
-cd /vid/software/devel/tbot
+cd /vid/software/devel/ubtest/tbot
 python3 setup.py install --user; rm -rf build/
 tbot selftest
 
