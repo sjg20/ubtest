@@ -57,7 +57,7 @@ class Flash:
             self.host.exec0("sync", self.block_device)
 
     def dd_erase_partition(self):
-        self.dd_to_block_device('/dev/zero', 0, bs=1024 * 1024, count=1)
+        self.dd_to_block_device('/dev/zero', 1, bs=1024, count=1023)
 
     def unmount(self):
         host = self.host
@@ -79,7 +79,7 @@ class Flash:
         self.dd_erase_partition()
         host = self.host
         fname = os.path.join(repo._local_str(), "u-boot-sunxi-with-spl.bin")
-        self.dd_to_block_device(fname, 1, bs=8192)
+        self.dd_to_block_device(fname, 8, bs=1024)
 
     def flash_rpi_n(self, repo, name='rpi3', do_gpu_freq=True):
         host = self.host
@@ -94,7 +94,7 @@ class Flash:
                 host.exec0("bash", "-c", "echo gpu_freq=250 >>%s" % config)
 
         # Copy U-Boot over from the build directory
-        if name == 'rpi0':
+        if name is None:
             dest = host.fsroot / ("/media/%s/kernel.img" % self.mount_point)
         else:
             dest = host.fsroot / ("/media/%s/%s-u-boot.bin" %
@@ -106,7 +106,10 @@ class Flash:
         self.flash_rpi_n(repo)
 
     def flash_rpi0(self, repo):
-        self.flash_rpi_n(repo, 'rpi0')
+        self.flash_rpi_n(repo, name=None)
+
+    def flash_rpi2(self, repo):
+        self.flash_rpi_n(repo, name=None)
 
     def flash_rpi4(self, repo):
         self.flash_rpi_n(repo, 'rpi4', False)
