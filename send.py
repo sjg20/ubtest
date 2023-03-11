@@ -159,8 +159,9 @@ hid,uboot_header,1024,0x10000000,1G,0x00907000,0x31000
             #addr = 0x20000000
             with open(script._local_str(), 'w') as outf:
                 print('''open sn9260
+version
 write_file %#x %s
-go %#x''' % (usbboot_loadaddr, fname, usbboot_loadaddr), file=outf)
+go %#x''' % (self.usbboot_loadaddr, fname, self.usbboot_loadaddr), file=outf)
             #cmd = ['cd', repo._local_str(), ';', 'samba-script', script]
             self.host.exec0('mkdir', '-p', repo / tmp)
             shell.copy(script, repo / tmp / main)
