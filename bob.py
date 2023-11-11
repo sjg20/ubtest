@@ -13,7 +13,7 @@ class BobUBootBuilder(uboot.UBootBuilder, Blobs):
     defconfig = "chromebook_bob_defconfig"
     toolchain = "aarch64"
     blob_dest = "."
-    blob_src = "/vid/software/devel/rk3399/bl31.elf"
+    blob_src = "/vid/software/devel/rk3399/bl31.elf.c194aa"
 
     def do_patch(self, repo: git.GitRepository) -> None:
         self.add_blobs(repo)
