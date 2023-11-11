@@ -5,7 +5,7 @@ import cros_setup
 from cros_constants import DUT_CONTROL, UBTEST
 import tbot
 
-sys.path.append(os.path.join(UBTEST, "u-boot", "tools", "patman"))
+sys.path.append(os.path.join(UBTEST, "u_boot_pylib"))
 import command
 
 class Servo:
