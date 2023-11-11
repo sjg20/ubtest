@@ -40,7 +40,7 @@ class Edison(
     usbrelay_name = "7QMBS"
     usbrelay_recovery = "6"
     usbrelay_reset = "5"
-    ykush_serial = "YK19191"
+    ykush_serial = "YK19193"
     ykush_port = "1"
 
     ether_mac = None
