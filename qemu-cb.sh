@@ -20,6 +20,10 @@ cbfstool $BUILD_DIR/coreboot.rom add-flat-binary -f $BUILD_DIR/u-boot.bin \
 	-n fallback/payload -c LZMA -l 0x1110000 -e 0x1110000;
 
 qemu-system-x86_64 -bios $BUILD_DIR/coreboot.rom -serial mon:stdio \
+ 	-smp cpus=2 -m 1G
+exit 0
+
+qemu-system-x86_64 -bios $BUILD_DIR/coreboot.rom -serial mon:stdio \
  	-smp cpus=2 -m 1G \
  	-drive id=disk,file=$ISO,if=none \
  	-device ahci,id=ahci \

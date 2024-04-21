@@ -1,13 +1,16 @@
 #!/bin/sh
 
-set -ex
+#set -ex
 
 #V=-v
 
 # Run a test on ARM with qemu
 
-test=$1
+. "$(dirname $0)/hooks.sh"
 
-crosfw qemu_arm64
-PATH=$PATH:/vid/software/devel/ubtest/u-boot-test-hooks/ test/py/test.py \
-	-B qemu_arm64 --id na --build-dir /tmp/b/qemu_arm64 -k ${test}
+# set_build qemu_arm64
+
+build_and_run qemu_arm64 $1
+# crosfw qemu_arm64
+# test/py/test.py \
+# 	-B qemu_arm64 --id na --build-dir /tmp/b/qemu_arm64 -k ${test}
